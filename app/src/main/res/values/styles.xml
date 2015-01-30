@@ -4,10 +4,12 @@
 
     <!-- No Drawer Header -->
     <style name="NoHeaderLight" parent="MaterialNavigationDrawerTheme.Light.DarkActionBar">
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#558b2f</item>
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">#FFFFFF</item>
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
+
+
     </style>
 
 
@@ -29,7 +31,6 @@
         <item name="colorPrimaryDark">#558b2f</item>
         <item name="colorAccent">#FFFFFF</item>
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
-        <item name="rippleBackport">true</item>
     </style>
 
 

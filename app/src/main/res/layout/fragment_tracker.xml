@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <sleeping_vityaz.trackmycaffeine.circularcounter.CircularCounter
+        xmlns:meter="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/meter"
+        android:layout_width="330dp"
+        android:layout_height="330dp"
+        android:padding="25dp"
+        meter:range="60"
+        meter:textSize="25sp"
+        meter:textColor="@color/primary_text"
+        meter:metricSize="10sp"
+        meter:metricText="240 mg to reach limit"
+        android:layout_gravity="center_horizontal"
+        />
+
+</LinearLayout>

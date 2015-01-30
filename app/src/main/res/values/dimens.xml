@@ -10,4 +10,13 @@
     <dimen name="navigation_drawer_width">240dp</dimen>
 
 
+    <dimen name="width">10dp</dimen>
+    <dimen name="textSize">70dp</dimen>
+    <dimen name="metricSize">14dp</dimen>
+    <dimen name="metricPaddingY">35dp</dimen>
+
+    <dimen name="first">10dp</dimen>
+    <dimen name="second">3dp</dimen>
+
+
 </resources>

@@ -1,20 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <sleeping_vityaz.trackmycaffeine.circularcounter.CircularCounter
+    <!--<sleeping_vityaz.trackmycaffeine.circularcounter.CircularCounter
         xmlns:meter="http://schemas.android.com/apk/res-auto"
         android:id="@+id/meter"
-        android:layout_width="330dp"
-        android:layout_height="330dp"
-        android:padding="25dp"
-        meter:range="60"
-        meter:textSize="25sp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:padding="10dp"
+        meter:range="360"
+        meter:textSize="10sp"
         meter:textColor="@color/primary_text"
-        meter:metricSize="10sp"
+        meter:metricSize="5sp"
         meter:metricText="240 mg to reach limit"
-        android:layout_gravity="center_horizontal"
-        />
+        android:layout_gravity="left"
+        />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.github.lzyzsd.circleprogress.ArcProgress
+            android:id="@+id/arc_progress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="@dimen/content_padding"
+            android:layout_marginTop="@dimen/content_padding"
+            custom:arc_bottom_text="TODAY"
+            custom:arc_bottom_text_size="14sp"
+            custom:arc_finished_color="@color/primary"
+            custom:arc_max="400"
+            custom:arc_progress="0"
+            custom:arc_suffix_text="mg"
+            custom:arc_suffix_text_padding="8dp"
+            custom:arc_suffix_text_size="10sp"
+            custom:arc_text_color="@color/primary_dark"
+            custom:arc_text_size="28sp"
+            custom:arc_unfinished_color="@color/primary_light" />
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/content_margin">
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Duration" />
+
+            <TextView
+                android:id="@+id/tv_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Results" />
+        </TableLayout>
+    </LinearLayout>
+
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

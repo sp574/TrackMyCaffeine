@@ -1,19 +1,15 @@
 package sleeping_vityaz.trackmycaffeine.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,16 +17,17 @@ import android.widget.TextView;
 import com.doomonafireball.betterpickers.datepicker.DatePickerBuilder;
 import com.doomonafireball.betterpickers.datepicker.DatePickerDialogFragment;
 
-import org.w3c.dom.Text;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
-import sleeping_vityaz.trackmycaffeine.DBTools;
+import sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView;
+import sleeping_vityaz.trackmycaffeine.databases.DBAdapter;
+import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.util.CommonConstants;
@@ -44,6 +41,15 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
     public static final String TAG = "ADD-NEW-CAFFEINE-FRAGMENT";
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
+
+    CustomAutoCompleteView myAutoComplete;
+    // adapter for auto-complete
+    ArrayAdapter<String> myAdapter;
+    DBAdapter dbAdapter;
+
+
+    // just to add some initial value
+    String[] item = new String[] {"Please search..."};
 
     private TextView tv_title;
     private TextView tv_date;
@@ -60,9 +66,14 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_add_new_caffeine);
 
+        findViewsById();
+
+        dbAdapter = new DBAdapter(this);
+        dbAdapter.createDatabase();
+
         dateFormatter = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
 
-        findViewsById();
+
 
         final Calendar calendar = Calendar.getInstance();
 
@@ -85,8 +96,58 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
             }
         });
 
+        myAutoComplete.addTextChangedListener(watch);
 
 
+        // set our adapter
+        myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
+        myAutoComplete.setAdapter(myAdapter);
+
+    }
+
+    TextWatcher watch = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence userInput, int start, int before, int count) {
+            // query the database based on the user input
+            item = getItemsFromDb(userInput.toString());
+
+            // update the adapater
+            myAdapter.notifyDataSetChanged();
+            myAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.custom_autocomplete_dropdown, item);
+            myAutoComplete.setAdapter(myAdapter);
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    // this function is used in CustomAutoCompleteTextChangedListener.java
+    public String[] getItemsFromDb(String searchTerm){
+
+        dbAdapter.open();
+
+        // add items on the array dynamically
+        List<String> products = dbAdapter.read(searchTerm);
+        int rowCount = products.size();
+
+        String[] item = new String[rowCount];
+        int x = 0;
+
+        for (String product : products) {
+            item[x] = product;
+            x++;
+        }
+        dbAdapter.close();
+
+        return item;
     }
 
     private void findViewsById() {
@@ -95,7 +156,8 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
         tv_start = (TextView) findViewById(R.id.tv_start);
         et_date = (EditText) findViewById(R.id.et_date);
         et_start = (EditText) findViewById(R.id.et_start);
-        et_item = (EditText) findViewById(R.id.et_item);
+        myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.ac_product_autocomplete);
+
     }
 
 
@@ -135,7 +197,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
 
                 // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                 HashMap<String, String> queryValuesMap = new HashMap<String, String>();
-                queryValuesMap.put(CommonConstants.PRODUCT, et_item.getText().toString());
+                queryValuesMap.put(CommonConstants.PRODUCT, myAutoComplete.getText().toString());
                 queryValuesMap.put(CommonConstants.DRINK_VOLUME, "" + 1); //get from spinner
                 queryValuesMap.put(CommonConstants.CAFFEINE_MASS, "" + 1);  // get from product_db once spinner is known
                 queryValuesMap.put(CommonConstants.DATE_CREATED, "2015-01-31");//changeDateFormat(dateFormatter.format(et_date.getText().toString())));

@@ -8,10 +8,20 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">#FFFFFF</item>
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
-
-
     </style>
 
+    <style name="Theme.AppCompat.Light.AddNewCaffeineFragment" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:autoCompleteTextViewStyle">@style/Widget.AutoCompleteTextViewLight</item>
+        <item name="android:dropDownItemStyle">@style/Widget.DropDownItemLight</item>
+    </style>
+
+    <style name="Widget.AutoCompleteTextViewLight" parent="@android:style/Widget.AutoCompleteTextView">
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
+    <style name="Widget.DropDownItemLight" parent="@android:style/Widget.DropDownItem">
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
 
     <!-- Dark Theme-->
 
@@ -32,10 +42,6 @@
         <item name="colorAccent">#FFFFFF</item>
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
     </style>
-
-
-
-
 
 
 </resources>

@@ -18,10 +18,9 @@ import com.daimajia.swipe.util.Attributes;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
-import sleeping_vityaz.trackmycaffeine.DBTools;
+import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.RecyclerViewAdapter;
 import sleeping_vityaz.trackmycaffeine.adapters.util.DividerItemDecoration;
@@ -41,6 +40,7 @@ public class TrackerFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<HashMap<String, String>> mDataSet;
+
 
     DBTools dbTools = null;
 

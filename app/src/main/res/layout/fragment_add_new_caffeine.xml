@@ -62,15 +62,17 @@
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/et_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Spinner
-        android:layout_width="match_parent"
+    <sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView
+        android:id="@+id/ac_product_autocomplete"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner_volume"
-        android:layout_gravity="center_horizontal" />
+        android:completionThreshold="1"
+        android:textColor="@color/primary_text"
+        android:textColorHint="@color/primary_text">
+    </sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView>
+
+    <!-- add numberpad/edittext for volume consumed -->
+
+
 
 </LinearLayout>

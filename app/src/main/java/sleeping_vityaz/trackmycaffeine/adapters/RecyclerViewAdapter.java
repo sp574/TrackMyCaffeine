@@ -99,11 +99,11 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             }
         });
         viewHolder.tv_keyId.setText(recordMap.get(CommonConstants.KEY_ID));
-        viewHolder.tv_caffeine_mass.setText(recordMap.get(CommonConstants.CAFFEINE_MASS));
+        viewHolder.tv_caffeine_mass.setText(recordMap.get(CommonConstants.CAFFEINE_MASS)+"mg from ");
         viewHolder.tv_product.setText(recordMap.get(CommonConstants.PRODUCT));
         viewHolder.tv_date.setText(recordMap.get(CommonConstants.DATE_CREATED));
         viewHolder.tv_time.setText(recordMap.get(CommonConstants.TIME_STARTED));
-        viewHolder.tv_drink_volume.setText(recordMap.get(CommonConstants.DRINK_VOLUME));
+        viewHolder.tv_drink_volume.setText(" - "+recordMap.get(CommonConstants.DRINK_VOLUME)+"fl.oz.");
         mItemManger.bindView(viewHolder.itemView, position);
     }
 

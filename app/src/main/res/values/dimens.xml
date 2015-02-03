@@ -5,6 +5,7 @@
     <dimen name="app_margin">32dp</dimen>
     <dimen name="content_margin">16dp</dimen>
     <dimen name="content_padding">10dp</dimen>
+    <dimen name="component_margin">10dp</dimen>
 
     <!--
             Per the design guidelines, navigation drawers should be between 240dp and 320dp:

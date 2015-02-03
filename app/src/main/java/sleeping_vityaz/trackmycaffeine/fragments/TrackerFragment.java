@@ -59,7 +59,7 @@ public class TrackerFragment extends Fragment {
         double concentration = Calculations.calculateConcentration(i_date, i_start, 0);
         results.setText("Concentration of caffeine: " + concentration);
         alert("" + concentration);
-        arcProgress.setProgress((int) concentration);
+        arcProgress.setProgress((int) 0.0);
 
         return rootView;
     }

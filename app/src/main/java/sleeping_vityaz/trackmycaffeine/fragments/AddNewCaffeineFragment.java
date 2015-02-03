@@ -2,6 +2,7 @@ package sleeping_vityaz.trackmycaffeine.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,37 +11,47 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
-import com.doomonafireball.betterpickers.datepicker.DatePickerBuilder;
-import com.doomonafireball.betterpickers.datepicker.DatePickerDialogFragment;
+import com.android.datetimepicker.date.DatePickerDialog;
+import com.android.datetimepicker.time.RadialPickerLayout;
+import com.android.datetimepicker.time.TimePickerDialog;
+import com.doomonafireball.betterpickers.numberpicker.NumberPickerBuilder;
+import com.doomonafireball.betterpickers.numberpicker.NumberPickerDialogFragment;
+import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
 
-import java.text.ParseException;
+import org.joda.time.DateTime;
+
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Calendar;
-import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView;
 import sleeping_vityaz.trackmycaffeine.databases.DBAdapter;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.R;
+import sleeping_vityaz.trackmycaffeine.util.Calculations;
 import sleeping_vityaz.trackmycaffeine.util.CommonConstants;
 
 /**
  * Created by naja-ox on 1/30/15.
  */
-public class AddNewCaffeineFragment extends ActionBarActivity implements
-        DatePickerDialogFragment.DatePickerDialogHandler {
+public class AddNewCaffeineFragment extends ActionBarActivity implements DatePickerDialog.OnDateSetListener, RadialTimePickerDialog.OnTimeSetListener, NumberPickerDialogFragment.NumberPickerDialogHandler  {
 
     public static final String TAG = "ADD-NEW-CAFFEINE-FRAGMENT";
-    public static final String DATEPICKER_TAG = "datepicker";
-    public static final String TIMEPICKER_TAG = "timepicker";
+    private static final String FRAG_TAG_TIME_PICKER = "timePickerDialogFragment";
+    private boolean mHasDialogFrame;
+    private static final String TIME_PATTERN = "HH:mm";
 
     CustomAutoCompleteView myAutoComplete;
     // adapter for auto-complete
@@ -56,9 +67,15 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
     private TextView tv_start;
     private EditText et_date;
     private EditText et_start;
-    private EditText et_item;
+    private EditText et_volume;
+    private RadioButton rb_floz;
+    private RadioButton rb_ml;
+    private RadioGroup rg_units;
 
-    private SimpleDateFormat dateFormatter;
+
+    private Calendar calendar;
+    private DateFormat dateFormat;
+    private SimpleDateFormat timeFormat;
 
 
     @Override
@@ -66,42 +83,45 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_add_new_caffeine);
 
+        if (savedInstanceState == null) {
+            mHasDialogFrame = findViewById(R.id.frame) != null;
+        }
+
         findViewsById();
 
         dbAdapter = new DBAdapter(this);
         dbAdapter.createDatabase();
 
-        dateFormatter = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+        calendar = Calendar.getInstance();
+        dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
 
+        update();
 
-
-        final Calendar calendar = Calendar.getInstance();
-
-
-        findViewById(R.id.et_date).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                DatePickerBuilder dpb = new DatePickerBuilder()
-                        .setFragmentManager(getSupportFragmentManager())
-                        .setStyleResId(R.style.BetterPickersDialogFragment);
-                dpb.show();
-            }
-        });
-
-        findViewById(R.id.et_start).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         myAutoComplete.addTextChangedListener(watch);
-
 
         // set our adapter
         myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
         myAutoComplete.setAdapter(myAdapter);
+
+        rg_units.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.ounces:
+                        if (!et_volume.getText().toString().equals("")) {
+                            Log.d(TAG, "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1));
+                            et_volume.setText("" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1));
+                        }
+                        break;
+                    case R.id.ml:
+                        if (!et_volume.getText().toString().equals(""))
+                            et_volume.setText(""+ Calculations.round((Double.parseDouble(et_volume.getText().toString()) / 0.033814), 1));
+                        break;
+                }
+            }
+        });
 
     }
 
@@ -125,9 +145,18 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            // see how much volume is set in the product db
+            getVolumeInfoAndSetFields(myAutoComplete.getText().toString());
         }
     };
+
+    private void getVolumeInfoAndSetFields(String product) {
+        dbAdapter.open();
+        HashMap<String, String> recordMap = dbAdapter.getRecordInfo(product);
+        dbAdapter.close();
+        et_volume.setText(recordMap.get(CommonConstants.C_VOLUME_DRINK));
+        rb_floz.setChecked(true);
+    }
 
     // this function is used in CustomAutoCompleteTextChangedListener.java
     public String[] getItemsFromDb(String searchTerm){
@@ -157,18 +186,26 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
         et_date = (EditText) findViewById(R.id.et_date);
         et_start = (EditText) findViewById(R.id.et_start);
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.ac_product_autocomplete);
-
-    }
-
-
-    @Override
-    public void onDialogDateSet(int i, int year, int monthOfYear, int dayOfMonth) {
-        et_date.setText((monthOfYear+1)+"-"+dayOfMonth+"-"+year);
+        et_volume = (EditText) findViewById(R.id.et_volume);
+        rg_units = (RadioGroup) findViewById(R.id.rg_units);
+        rb_floz = (RadioButton) findViewById(R.id.ounces);
+        rb_ml = (RadioButton) findViewById(R.id.ml);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        // Example of reattaching to the fragment
+        super.onResume();
+        RadialTimePickerDialog rtpd = (RadialTimePickerDialog) getSupportFragmentManager().findFragmentByTag(
+                FRAG_TAG_TIME_PICKER);
+        if (rtpd != null) {
+            rtpd.setOnTimeSetListener(this);
+        }
     }
 
     @Override
@@ -188,19 +225,30 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
             alert(et_date.getText().toString());
             if (et_date.getText().toString()!=""
                     && !et_start.getText().toString().equals("")
-                    //&& !et_item.getText().toString().equals("")
+                    && !myAutoComplete.getText().toString().equals("")
+                    && !et_volume.getText().toString().equals("")
                     ) {
                 final DBTools dbTools = DBTools.getInstance(this);
 
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
+                dbAdapter.open();
+                HashMap<String, String> recordMap = dbAdapter.getRecordInfo(myAutoComplete.getText().toString());
+                dbAdapter.close();
+
+                String toDB="";
+                if (rb_floz.isChecked()) {
+                    toDB = et_volume.getText().toString();
+                } else if(rb_ml.isChecked()){
+                    toDB = ""+Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                }
                 // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                 HashMap<String, String> queryValuesMap = new HashMap<String, String>();
                 queryValuesMap.put(CommonConstants.PRODUCT, myAutoComplete.getText().toString());
-                queryValuesMap.put(CommonConstants.DRINK_VOLUME, "" + 1); //get from spinner
-                queryValuesMap.put(CommonConstants.CAFFEINE_MASS, "" + 1);  // get from product_db once spinner is known
-                queryValuesMap.put(CommonConstants.DATE_CREATED, "2015-01-31");//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
+                queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB); //get from spinner
+                queryValuesMap.put(CommonConstants.CAFFEINE_MASS, recordMap.get(CommonConstants.C_MASS_CAFFEINE));  // get from product_db once spinner is known
+                queryValuesMap.put(CommonConstants.DATE_CREATED, et_date.getText().toString());//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
                 queryValuesMap.put(CommonConstants.TIME_STARTED, et_start.getText().toString());
 
                 alert(queryValuesMap.toString());
@@ -215,7 +263,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private String changeDateFormat(String oldDateFormatString) {
+    /*private String changeDateFormat(String oldDateFormatString) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyy");
             Date d = sdf.parse(oldDateFormatString);
@@ -225,9 +273,59 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements
             e.printStackTrace();
         }
         return "";
-    }
+    }*/
 
     private void alert(String s) {
         Log.d(TAG, s);
+    }
+
+    private void update() {
+        et_date.setText(dateFormat.format(calendar.getTime()));
+        et_start.setText(timeFormat.format(calendar.getTime()));
+    }
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.et_date:
+                DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), "datePicker");
+                break;
+            case R.id.et_start:
+                DateTime now = DateTime.now();
+                RadialTimePickerDialog timePickerDialog = RadialTimePickerDialog
+                        .newInstance(AddNewCaffeineFragment.this, now.getHourOfDay(), now.getMinuteOfHour(), false);
+                if (mHasDialogFrame) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+                    ft.add(R.id.frame, timePickerDialog, FRAG_TAG_TIME_PICKER)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commit();
+                } else {
+                    timePickerDialog.show(getSupportFragmentManager(), FRAG_TAG_TIME_PICKER);
+                }
+                break;
+            case R.id.et_volume:
+                NumberPickerBuilder npb = new NumberPickerBuilder()
+                        .setFragmentManager(getSupportFragmentManager())
+                        .setStyleResId(R.style.BetterPickersDialogFragment_Light);
+                npb.show();
+        }
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+        calendar.set(year, monthOfYear, dayOfMonth);
+        update();
+    }
+
+    @Override
+    public void onTimeSet(RadialTimePickerDialog radialTimePickerDialog, int hour_of_day, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, hour_of_day);
+        calendar.set(Calendar.MINUTE, minute);
+        update();
+    }
+
+    @Override
+    public void onDialogNumberSet(int reference, int number, double decimal, boolean isNegative, double fullNumber) {
+        et_volume.setText("" + fullNumber);
     }
 }

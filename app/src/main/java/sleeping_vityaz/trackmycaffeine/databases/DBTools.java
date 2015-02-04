@@ -174,67 +174,34 @@ public class DBTools extends SQLiteOpenHelper {
 
 
 
-    public HashMap<String, String> getRecordInfoProduct(String product){
+    public ArrayList<HashMap<String, String>> getAllRecordsOnThisDate(String date) {
 
-        HashMap<String, String> recordMap = new HashMap<String, String>();
+        ArrayList<HashMap<String, String>> recordArrayList = new ArrayList<HashMap<String, String>>();
         SQLiteDatabase database = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM product_table WHERE "+CommonConstants.C_PRODUCT+" = '" + product + "'";
+
+        String selectQuery = "SELECT * FROM " + CommonConstants.HISTORY_TABLE + " WHERE " + CommonConstants.DATE_CREATED + " ='" + date + "'";
 
         Cursor cursor = database.rawQuery(selectQuery, null);
 
-        if(cursor.moveToFirst()){
-            do{
-                recordMap.put(CommonConstants.C_POSITION, cursor.getString(cursor.getColumnIndex(CommonConstants.C_POSITION)));
-                recordMap.put(CommonConstants.C_PRODUCT, cursor.getString(cursor.getColumnIndex(CommonConstants.C_PRODUCT)));
-                recordMap.put(CommonConstants.C_VOLUME_DRINK, cursor.getString(cursor.getColumnIndex(CommonConstants.C_VOLUME_DRINK)));
-                recordMap.put(CommonConstants.C_MASS_CAFFEINE, cursor.getString(cursor.getColumnIndex(CommonConstants.C_MASS_CAFFEINE)));
-                recordMap.put(CommonConstants.C_DENSITY_CAFFEINE, cursor.getString(cursor.getColumnIndex(CommonConstants.C_DENSITY_CAFFEINE)));
-
-            }while(cursor.moveToNext());
-        }
-        return recordMap;
-    }
-
-    // Read records related to the search term
-    public List<String> read(String searchTerm) {
-
-        List<String> coffeeList = new ArrayList<String>();
-        SQLiteDatabase database = this.getReadableDatabase();
-        // select query
-        String query = "SELECT * FROM product_table "+
-                "WHERE " + CommonConstants.C_PRODUCT + " LIKE '%" + searchTerm + "%'" + " "+
-                "ORDER BY " + CommonConstants.C_MASS_CAFFEINE + " DESC "+
-                "LIMIT 0,5";
-
-
-        /*String query2 = "select name from sqlite_master where type = 'table'";
-        // execute the query
-        Cursor c = mDb.rawQuery(query2, null);
-
-        if (c.moveToFirst()) {
-            while ( !c.isAfterLast() ) {
-                Log.d("DBAdapter-cursor", "Table Name=> "+c.getString(0));
-                c.moveToNext();
-            }
-        }*/
-        Cursor cursor = database.rawQuery(query, null);
-
-        // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                String product = cursor.getString(cursor.getColumnIndex(CommonConstants.C_PRODUCT));
-                // add to list
-                coffeeList.add(product);
+                HashMap<String, String> recordMap = new HashMap<String, String>();
+
+                recordMap.put(CommonConstants.KEY_ID, cursor.getString(cursor.getColumnIndex(CommonConstants.KEY_ID)));
+                recordMap.put(CommonConstants.PRODUCT, cursor.getString(cursor.getColumnIndex(CommonConstants.PRODUCT)));
+                recordMap.put(CommonConstants.DRINK_VOLUME, cursor.getString(cursor.getColumnIndex(CommonConstants.DRINK_VOLUME)));
+                recordMap.put(CommonConstants.CAFFEINE_MASS, cursor.getString(cursor.getColumnIndex(CommonConstants.CAFFEINE_MASS)));
+                recordMap.put(CommonConstants.DATE_CREATED, cursor.getString(cursor.getColumnIndex(CommonConstants.DATE_CREATED)));
+                recordMap.put(CommonConstants.TIME_STARTED, cursor.getString(cursor.getColumnIndex(CommonConstants.TIME_STARTED)));
+
+                recordArrayList.add(recordMap);
 
             } while (cursor.moveToNext());
         }
-
-        cursor.close();
-        database.close();
-
-        // return the list of records
-        return coffeeList;
+        return recordArrayList;
     }
+
+
 
     private void alert(String s) {
         Log.d(TAG, s);

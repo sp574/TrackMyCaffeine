@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -109,14 +110,18 @@ public class DBAdapter
 
         List<String> coffeeList = new ArrayList<String>();
 
+        //searchTerm = searchTerm.replaceAll("'", "''");
+        Log.d("DBAdapter", searchTerm);
+
         // select query
         String query = "SELECT * FROM coffee_table "+
-                "WHERE " + CommonConstants.C_PRODUCT + " LIKE '%" + searchTerm + "%'" + " "+
+                //"WHERE " + CommonConstants.C_PRODUCT + " LIKE '%" + searchTerm + "%'" + " "+
+                "WHERE " + CommonConstants.C_PRODUCT + " LIKE ? "+
                 "ORDER BY " + CommonConstants.C_PRODUCT + " ASC ";//+
                 //"LIMIT 0,5";
 
 
-        String query2 = "select name from sqlite_master where type = 'table'";
+       /* String query2 = "select name from sqlite_master where type = 'table'";
         // execute the query
         Cursor c = mDb.rawQuery(query2, null);
 
@@ -125,8 +130,10 @@ public class DBAdapter
                 Log.d("DBAdapter-cursor", "Table Name=> "+c.getString(0));
                 c.moveToNext();
             }
-        }
-        Cursor cursor = mDb.rawQuery(query, null);
+        }*/
+
+        Log.d("query", query);
+        Cursor cursor = mDb.rawQuery(query, new String[] {"%" + searchTerm + "%"});
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {

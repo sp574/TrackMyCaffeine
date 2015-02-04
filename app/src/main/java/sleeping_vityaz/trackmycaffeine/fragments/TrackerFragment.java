@@ -17,14 +17,19 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import com.daimajia.swipe.util.Attributes;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.RecyclerViewAdapter;
 import sleeping_vityaz.trackmycaffeine.adapters.util.DividerItemDecoration;
 import sleeping_vityaz.trackmycaffeine.util.Calculations;
+import sleeping_vityaz.trackmycaffeine.util.CommonConstants;
+import sleeping_vityaz.trackmycaffeine.util.Util;
 
 
 public class TrackerFragment extends Fragment {
@@ -41,6 +46,11 @@ public class TrackerFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private ArrayList<HashMap<String, String>> mDataSet;
 
+    private Calendar calendar;
+    private DateFormat dateFormat;
+
+    private double caffeineConsumedToday;
+
 
     DBTools dbTools = null;
 
@@ -54,12 +64,22 @@ public class TrackerFragment extends Fragment {
 
         recyclyViewSetUp(rootView);
 
+        calendar = Calendar.getInstance();
+        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+
         final int i_date = 21*3600*1000, i_start = 20*3600*1000;
 
         double concentration = Calculations.calculateConcentration(i_date, i_start, 0);
         results.setText("Concentration of caffeine: " + concentration);
-        alert("" + concentration);
-        arcProgress.setProgress((int) 0.0);
+        //alert("" + concentration);
+
+
+        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+        for (HashMap<String, String> hashMap : allRecordsOnThisDate){
+            caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
+        }
+        alert("Caffeine Consumed Today "+caffeineConsumedToday);
+        arcProgress.setProgress((int) Calculations.round(caffeineConsumedToday, 0));
 
         return rootView;
     }
@@ -74,7 +94,7 @@ public class TrackerFragment extends Fragment {
 
         // Adapter:
         mDataSet = dbTools.getAllRecords();
-        mAdapter = new RecyclerViewAdapter(this.getActivity(), mDataSet);
+        mAdapter = new RecyclerViewAdapter(this.getActivity(), mDataSet, arcProgress);
         ((RecyclerViewAdapter) mAdapter).setMode(Attributes.Mode.Single);
         recyclerView.setAdapter(mAdapter);
 

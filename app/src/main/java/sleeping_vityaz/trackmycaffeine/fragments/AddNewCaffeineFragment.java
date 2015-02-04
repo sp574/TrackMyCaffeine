@@ -42,6 +42,7 @@ import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.util.Calculations;
 import sleeping_vityaz.trackmycaffeine.util.CommonConstants;
+import sleeping_vityaz.trackmycaffeine.util.Util;
 
 /**
  * Created by naja-ox on 1/30/15.
@@ -51,7 +52,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     public static final String TAG = "ADD-NEW-CAFFEINE-FRAGMENT";
     private static final String FRAG_TAG_TIME_PICKER = "timePickerDialogFragment";
     private boolean mHasDialogFrame;
-    private static final String TIME_PATTERN = "HH:mm";
+    private static final String TIME_PATTERN = "hh:mm a";
 
     CustomAutoCompleteView myAutoComplete;
     // adapter for auto-complete
@@ -93,7 +94,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         dbAdapter.createDatabase();
 
         calendar = Calendar.getInstance();
-        dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
         timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
 
         update();
@@ -237,19 +238,19 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 HashMap<String, String> recordMap = dbAdapter.getRecordInfo(myAutoComplete.getText().toString());
                 dbAdapter.close();
 
-                String toDB="";
+                String toDB_volume="";
                 if (rb_floz.isChecked()) {
-                    toDB = et_volume.getText().toString();
+                    toDB_volume = et_volume.getText().toString();
                 } else if(rb_ml.isChecked()){
-                    toDB = ""+Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    toDB_volume = ""+Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
                 }
                 // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                 HashMap<String, String> queryValuesMap = new HashMap<String, String>();
                 queryValuesMap.put(CommonConstants.PRODUCT, myAutoComplete.getText().toString());
-                queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB); //get from spinner
-                queryValuesMap.put(CommonConstants.CAFFEINE_MASS, recordMap.get(CommonConstants.C_MASS_CAFFEINE));  // get from product_db once spinner is known
-                queryValuesMap.put(CommonConstants.DATE_CREATED, et_date.getText().toString());//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
-                queryValuesMap.put(CommonConstants.TIME_STARTED, et_start.getText().toString());
+                queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
+                queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
+                queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
+                queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
 
                 alert(queryValuesMap.toString());
 
@@ -263,17 +264,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         return super.onOptionsItemSelected(item);
     }
 
-    /*private String changeDateFormat(String oldDateFormatString) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyy");
-            Date d = sdf.parse(oldDateFormatString);
-            sdf.applyPattern("yyyy-MM-dd");
-            return sdf.format(d);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }*/
+
 
     private void alert(String s) {
         Log.d(TAG, s);

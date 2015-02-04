@@ -8,10 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
 
-public class Calculations extends Activity {
-
-
-
+public class Calculations {
 
     public static double calculateConcentration(int t, int start, int duration) {
         //final int duration = 24 * 3600 * 1000; // 24 hours as milliseconds

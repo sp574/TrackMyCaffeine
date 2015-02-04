@@ -88,9 +88,10 @@ public class DBAdapter
 
         HashMap<String, String> recordMap = new HashMap<String, String>();
 
-        String selectQuery = "SELECT * FROM coffee_table WHERE "+CommonConstants.C_PRODUCT+" = '" + product + "'";
+        String selectQuery = "SELECT * FROM coffee_table WHERE "+CommonConstants.C_PRODUCT+" = ?";
 
-        Cursor cursor = mDb.rawQuery(selectQuery, null);
+        Log.d("DBAdapter-getRecordInfo", product);
+        Cursor cursor = mDb.rawQuery(selectQuery, new String[] {""+product+""});
 
         if(cursor.moveToFirst()){
             do{

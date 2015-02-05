@@ -107,11 +107,11 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 mItemManger.closeAllItems();
                 dbTools.deleteRecord(viewHolder.tv_keyId.getText().toString());
 
-
                 calendar = Calendar.getInstance();
                 dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
                 ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+                caffeineConsumedToday = 0;
                 for (HashMap<String, String> hashMap : allRecordsOnThisDate){
                     caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
                 }

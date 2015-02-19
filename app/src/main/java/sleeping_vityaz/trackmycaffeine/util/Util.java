@@ -2,6 +2,10 @@ package sleeping_vityaz.trackmycaffeine.util;
 
 import android.util.Log;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +61,27 @@ public class Util {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static int timeToMilliseconds (String oldTimeFormatString){
+        try {
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("HH:mm");
+            DateTime d = dtf.parseDateTime(oldTimeFormatString);
+            return d.getHourOfDay()*3600*1000 + d.getMinuteOfHour()*60*1000;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static int stripeDateReturnMilliseconds (long oldTimeFormatString){
+        try {
+            DateTime d = new DateTime(oldTimeFormatString);
+            return d.getHourOfDay()*3600*1000 + d.getMinuteOfHour()*60*1000 + d.getSecondOfMinute()*1000;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static String adjustCaffeineMass (String density, String volume) {

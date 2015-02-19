@@ -19,57 +19,137 @@
         android:layout_gravity="left"
         />-->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.github.lzyzsd.circleprogress.ArcProgress
-            android:id="@+id/arc_progress"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginLeft="@dimen/content_padding"
-            android:layout_marginTop="@dimen/content_padding"
-            custom:arc_bottom_text="TODAY"
-            custom:arc_bottom_text_size="14sp"
-            custom:arc_finished_color="@color/primary"
-            custom:arc_max="400"
-            custom:arc_progress="0"
-            custom:arc_suffix_text="mg"
-            custom:arc_suffix_text_padding="8dp"
-            custom:arc_suffix_text_size="10sp"
-            custom:arc_text_color="@color/primary_dark"
-            custom:arc_text_size="28sp"
-            custom:arc_unfinished_color="@color/primary_light" />
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="102"
+            android:textSize="90sp" />
 
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/content_margin">
+            android:layout_marginBottom="22dp"
+            android:layout_above="@+id/linearLayout"
+            android:layout_toRightOf="@+id/tv_total"
+            android:layout_toEndOf="@+id/tv_total">
 
             <TextView
-                android:id="@+id/tv_date"
+                android:id="@+id/tv_mg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Date" />
+                android:text="mg"
+                android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/tv_duration"
+                android:id="@+id/tv_today"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Duration" />
-
-            <TextView
-                android:id="@+id/tv_results"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Results" />
+                android:text="TODAY"
+                android:textSize="20sp" />
         </TableLayout>
-    </LinearLayout>
 
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_total"
+            android:weightSum="4"
+            android:id="@+id/linearLayout">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/content_margin"
+                android:layout_weight="2">
+
+                <TableLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_effects_desc_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="EFFECTS LAST UNTIL"
+                        android:textSize="10sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_effects_desc_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="8pm"
+                        android:gravity="center_horizontal"/>
+                </TableLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/content_margin"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_rate_indicator"
+                    android:src="@drawable/ic_action_collection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_rate_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="5" />
+
+                <TextView
+                    android:id="@+id/tv_rate_units"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="mg" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/content_margin"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_left_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="298" />
+
+                <TextView
+                    android:id="@+id/tv_left_units"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="mg" />
+
+                <TextView
+                    android:id="@+id/tv_left_desc_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text=" left" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
     <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"

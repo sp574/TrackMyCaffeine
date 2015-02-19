@@ -61,17 +61,15 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
 
     private Context mContext;
     private ArrayList<HashMap<String, String>> mDataset;
-    private ArcProgress arcProgress;
     private Calendar calendar;
     private DateFormat dateFormat;
     private double caffeineConsumedToday;
 
     //protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
 
-    public RecyclerViewAdapter(Context context, ArrayList<HashMap<String, String>> objects, ArcProgress arcProgress) {
+    public RecyclerViewAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
         this.mContext = context;
         this.mDataset = objects;
-        this.arcProgress = arcProgress;
     }
 
     @Override
@@ -116,7 +114,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                     caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
                 }
 
-                arcProgress.setProgress((int) Calculations.round(caffeineConsumedToday, 0));
+                //arcProgress.setProgress((int) Calculations.round(caffeineConsumedToday, 0));
                 Toast.makeText(view.getContext(), "Deleted " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
         });

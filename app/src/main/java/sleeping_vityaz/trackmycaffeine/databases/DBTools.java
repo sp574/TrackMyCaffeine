@@ -70,20 +70,20 @@ public class DBTools extends SQLiteOpenHelper {
 
     /*
      * // Common column names
-    KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
+    KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED | DURATION
      */
     // Table Create Statement
     public String createTable(String TABLE) {
 
         String create = "CREATE TABLE "
                 + TABLE + " ( " + CommonConstants.KEY_ID + " INTEGER PRIMARY KEY, " + CommonConstants.PRODUCT
-                + " TEXT, " + CommonConstants.DRINK_VOLUME + " REAL, " + CommonConstants.CAFFEINE_MASS + " REAL, " + CommonConstants.DATE_CREATED + " INTEGER, " + CommonConstants.TIME_STARTED + " INTEGER" +" )";
+                + " TEXT, " + CommonConstants.DRINK_VOLUME + " REAL, " + CommonConstants.CAFFEINE_MASS + " REAL, " + CommonConstants.DATE_CREATED + " INTEGER, " + CommonConstants.TIME_STARTED + " INTEGER, "+ CommonConstants.DURATION + " INTEGER" +" )";
 
         return create;
     }
 
     /*
-    KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
+    KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED | DURATION
      */
     public void insertRecord(HashMap<String, String> queryValues) {
 
@@ -96,7 +96,7 @@ public class DBTools extends SQLiteOpenHelper {
         values.put(CommonConstants.CAFFEINE_MASS, queryValues.get(CommonConstants.CAFFEINE_MASS));
         values.put(CommonConstants.DATE_CREATED, queryValues.get(CommonConstants.DATE_CREATED));
         values.put(CommonConstants.TIME_STARTED, queryValues.get(CommonConstants.TIME_STARTED));
-
+        values.put(CommonConstants.DURATION, queryValues.get(CommonConstants.DURATION));
         database.insert(CommonConstants.HISTORY_TABLE, null, values);
 
         database.close();
@@ -140,6 +140,7 @@ public class DBTools extends SQLiteOpenHelper {
                 recordMap.put(CommonConstants.CAFFEINE_MASS, cursor.getString(cursor.getColumnIndex(CommonConstants.CAFFEINE_MASS)));
                 recordMap.put(CommonConstants.DATE_CREATED, cursor.getString(cursor.getColumnIndex(CommonConstants.DATE_CREATED)));
                 recordMap.put(CommonConstants.TIME_STARTED, cursor.getString(cursor.getColumnIndex(CommonConstants.TIME_STARTED)));
+                recordMap.put(CommonConstants.DURATION, cursor.getString(cursor.getColumnIndex(CommonConstants.DURATION)));
 
                 recordArrayList.add(recordMap);
 
@@ -165,6 +166,7 @@ public class DBTools extends SQLiteOpenHelper {
                 recordMap.put(CommonConstants.CAFFEINE_MASS, cursor.getString(cursor.getColumnIndex(CommonConstants.CAFFEINE_MASS)));
                 recordMap.put(CommonConstants.DATE_CREATED, cursor.getString(cursor.getColumnIndex(CommonConstants.DATE_CREATED)));
                 recordMap.put(CommonConstants.TIME_STARTED, cursor.getString(cursor.getColumnIndex(CommonConstants.TIME_STARTED)));
+                recordMap.put(CommonConstants.DURATION, cursor.getString(cursor.getColumnIndex(CommonConstants.DURATION)));
 
             }while(cursor.moveToNext());
         }
@@ -193,6 +195,7 @@ public class DBTools extends SQLiteOpenHelper {
                 recordMap.put(CommonConstants.CAFFEINE_MASS, cursor.getString(cursor.getColumnIndex(CommonConstants.CAFFEINE_MASS)));
                 recordMap.put(CommonConstants.DATE_CREATED, cursor.getString(cursor.getColumnIndex(CommonConstants.DATE_CREATED)));
                 recordMap.put(CommonConstants.TIME_STARTED, cursor.getString(cursor.getColumnIndex(CommonConstants.TIME_STARTED)));
+                recordMap.put(CommonConstants.DURATION, cursor.getString(cursor.getColumnIndex(CommonConstants.DURATION)));
 
                 recordArrayList.add(recordMap);
 

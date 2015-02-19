@@ -15,6 +15,7 @@ public class CommonConstants {
     public static final String CAFFEINE_MASS = "col_caffeine_mass";
     public static final String DATE_CREATED = "col_date";
     public static final String TIME_STARTED= "col_time_started";
+    public static final String DURATION = "col_duration";
 
     // coffee_db column names
     public static final String C_POSITION = "_id";

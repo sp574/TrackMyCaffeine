@@ -108,11 +108,11 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 calendar = Calendar.getInstance();
                 dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
-                ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+                /*ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
                 caffeineConsumedToday = 0;
                 for (HashMap<String, String> hashMap : allRecordsOnThisDate){
                     caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
-                }
+                }*/
 
                 //arcProgress.setProgress((int) Calculations.round(caffeineConsumedToday, 0));
                 Toast.makeText(view.getContext(), "Deleted " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();

@@ -59,6 +59,7 @@ public class TrackerFragment extends Fragment {
     private ArrayList<HashMap<String, String>> mDataSet;
 
     private Calendar calendar;
+    private Calendar calPrev;
     private DateFormat dateFormat;
 
     private double caffeineConsumedToday;
@@ -86,6 +87,7 @@ public class TrackerFragment extends Fragment {
         recyclyViewSetUp(rootView);
 
         calendar = Calendar.getInstance();
+        calPrev = Calendar.getInstance();
         dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
         final int i_date = 21*3600*1000, i_start = 20*3600*1000;
@@ -95,7 +97,8 @@ public class TrackerFragment extends Fragment {
         //alert("" + concentration);
 
         //final double concentration = 0.0;
-        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
+                                                                                                  Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
         for (HashMap<String, String> hashMap : allRecordsOnThisDate){
             caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
         }
@@ -188,20 +191,33 @@ public class TrackerFragment extends Fragment {
         double concentration = 0.0;
         caffeineConsumedToday = 0;
         calendar = Calendar.getInstance();
-        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+        calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -1);
+        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
+                                                                                                  Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
         //for (HashMap<String, String> hashMap : allRecordsOnThisDate){
         for (int i = 0; i < allRecordsOnThisDate.size(); i++) {
-            caffeineConsumedToday += Double.parseDouble(allRecordsOnThisDate.get(i).get(CommonConstants.CAFFEINE_MASS));
+            alert("FROM ARRAYLIST "+allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED));
+            alert("FROM CALENDAR "+Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+            if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) { //only sum up caffeine if consumed today
+                caffeineConsumedToday += Double.parseDouble(allRecordsOnThisDate.get(i).get(CommonConstants.CAFFEINE_MASS));
+            }
             // caffeineToStart, start, duration, timeOfInterest
             double caffeineToStart = Double.parseDouble(allRecordsOnThisDate.get(i).get(CommonConstants.CAFFEINE_MASS));
-            int start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
+            int start = 0;
             int duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
-            int timeOfInterest = Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
-
-            //alert("start: "+start);
-            //alert("duration: "+duration);
-            //alert("current: "+calendar.getTimeInMillis());
+            int timeOfInterest = 0;
+            if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) {
+                start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
+                timeOfInterest = Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
+            } else{ // Consumed caffeine yesterday
+                int _24hrsInMilliseconds = 24*3600*1000;
+                start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
+                timeOfInterest = _24hrsInMilliseconds+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
+            }
+            duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             concentration += Calculations.calcConcentration(caffeineToStart, start, duration, timeOfInterest);
+            // TODO: for each record, calculate its halflife timestamp and report the latest one
         }
         tv_total.setText("" + ((int) Calculations.round(caffeineConsumedToday, 0)));
         tv_rate_num.setText("" + (int) concentration);

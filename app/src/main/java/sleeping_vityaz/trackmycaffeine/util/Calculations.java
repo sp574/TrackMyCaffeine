@@ -47,7 +47,7 @@ public class Calculations {
                                            int duration, int timeOfInterest) {
         double concentration = 0.0;
         int durationPlus45Mins = duration + 45 * 60 * 1000; // duration + 45 minutes (in ms)
-        int halfLife = 10 * 60 * 60 * 1000; // 5 hrs = 300 minutes = 300,000 milliseconds
+        int halfLife = 6 * 60 * 60 * 1000; // 6 hrs = 360 minutes = in milliseconds
         // first 45 minutes, concentration linearly increases to its max
         Log.d("calcConcentration-start", ""+start);
         Log.d("calcConcentration-timeOfInterest", ""+timeOfInterest);
@@ -55,7 +55,7 @@ public class Calculations {
             concentration = caffeineToStart * (timeOfInterest-start)/(durationPlus45Mins);
             Log.d("calcConcentration-1", ""+concentration);
         } else if (timeOfInterest > (start + duration + halfLife)) { // report concentration=0 after caffeine no longer effective
-            concentration = 0.0;
+            concentration = caffeineToStart * (Math.exp((-((timeOfInterest-start) - durationPlus45Mins)) * Math.log(2.0) / halfLife));
             Log.d("calcConcentration-2", ""+concentration);
         } else {
             concentration = caffeineToStart * (Math.exp((-((timeOfInterest-start) - durationPlus45Mins)) * Math.log(2.0) / halfLife));

@@ -79,7 +79,8 @@ public class GraphFragment extends Fragment {
         List<Column> columns = new ArrayList<Column>();
         List<SubcolumnValue> values;
 
-        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
+                Util.convertDateForDB(dateFormat.format(calendar.getTime())));
 
 
         for (int i = 0; i < numColumns; ++i) {

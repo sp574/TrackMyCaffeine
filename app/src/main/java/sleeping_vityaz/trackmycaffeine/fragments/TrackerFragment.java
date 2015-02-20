@@ -63,6 +63,7 @@ public class TrackerFragment extends Fragment {
     private DateFormat dateFormat;
 
     private double caffeineConsumedToday;
+    private int effectsBy;
 
 
     DBTools dbTools = null;
@@ -190,12 +191,14 @@ public class TrackerFragment extends Fragment {
     private void updateRate() {
         double concentration = 0.0;
         caffeineConsumedToday = 0;
+        effectsBy = 0;
         calendar = Calendar.getInstance();
         calPrev = Calendar.getInstance();
         calPrev.add(Calendar.DATE, -1);
         ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
                                                                                                   Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
         //for (HashMap<String, String> hashMap : allRecordsOnThisDate){
+
         for (int i = 0; i < allRecordsOnThisDate.size(); i++) {
             alert("FROM ARRAYLIST "+allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED));
             alert("FROM CALENDAR "+Util.convertDateForDB(dateFormat.format(calendar.getTime())));
@@ -210,17 +213,24 @@ public class TrackerFragment extends Fragment {
             if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) {
                 start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
                 timeOfInterest = Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
+                if (effectsBy<(start+12*3600*1000)){ // date is today
+                    effectsBy = start+12*3600*1000; // check later, might need to correct this time later
+                }
             } else{ // Consumed caffeine yesterday
                 int _24hrsInMilliseconds = 24*3600*1000;
                 start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
                 timeOfInterest = _24hrsInMilliseconds+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
+                if (start > 12*3600*1000 && effectsBy<(start+12*3600*1000-24*3600*1000)){ // date is today, before afternoon
+                    effectsBy = start-12*3600*1000;
+                }
             }
+
             duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             concentration += Calculations.calcConcentration(caffeineToStart, start, duration, timeOfInterest);
-            // TODO: for each record, calculate its halflife timestamp and report the latest one
         }
         tv_total.setText("" + ((int) Calculations.round(caffeineConsumedToday, 0)));
         tv_rate_num.setText("" + (int) concentration);
+        tv_effects_desc_time.setText(Util.convertTimeForDisplay(effectsBy));
     }
 
     class MyTimerTask extends TimerTask {

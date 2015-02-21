@@ -10,7 +10,7 @@
             android:defaultValue="true"/>
 
         <EditTextPreference
-            android:key="edit_pref"
+            android:key="threshold_pref"
             android:title="Max Daily Threshold"
             android:summary="400 mg"
             android:inputType="number"

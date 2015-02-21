@@ -76,9 +76,12 @@ public class TrackerFragment extends Fragment {
 
     private SharedPreferences settings;
     private boolean notifications;
+    private String threshold;
     private String units;
 
     NotificationManager notificationManager;
+    private int LOW_ID = 0;
+    private int ABOVE_ID = 1;
     private boolean showNotification = true;
     private boolean mIsInForegroundMode;
 
@@ -105,6 +108,7 @@ public class TrackerFragment extends Fragment {
         // Restore preferences
         if (getActivity()!=null) { settings = PreferenceManager.getDefaultSharedPreferences(getActivity());}
         notifications = settings.getBoolean("notif_checkbox_pref", true);
+        threshold = settings.getString("threshold_pref", "400");
         units = settings.getString("units_drinks_pref", "");
 
         alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
@@ -113,6 +117,8 @@ public class TrackerFragment extends Fragment {
            notificationManager = (NotificationManager) getActivity().getSystemService(mContext.NOTIFICATION_SERVICE);
         }
         findViewsById(rootView);
+
+
 
         recyclyViewSetUp(rootView);
 
@@ -129,6 +135,14 @@ public class TrackerFragment extends Fragment {
         }
         alert("Caffeine Consumed Today "+caffeineConsumedToday);
         tv_total.setText("" + ((int) Calculations.round(caffeineConsumedToday, 0)));
+        int left_num = (int) Calculations.round((Integer.parseInt(threshold)-caffeineConsumedToday), 0);
+        if (left_num>=0){
+            tv_left_num.setText(""+left_num);
+            tv_left_desc_text.setText(" left");
+        }else{
+            tv_left_num.setText(""+(-1*left_num));
+            tv_left_desc_text.setText(" above");
+        }
 
         Timer timer = new Timer();
         MyTimerTask timerTask = new MyTimerTask();
@@ -223,6 +237,7 @@ public class TrackerFragment extends Fragment {
         // Restore preferences
         if (getActivity()!=null) { settings = PreferenceManager.getDefaultSharedPreferences(getActivity()); }
         notifications = settings.getBoolean("notif_checkbox_pref", true);
+        threshold = settings.getString("threshold_pref", "400");
         units = settings.getString("units_drinks_pref", "");
 
         //alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
@@ -291,6 +306,14 @@ public class TrackerFragment extends Fragment {
             iv_rate_indicator.setVisibility(View.VISIBLE);
             if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.down_arrow));
         }
+        int left_num = (int) Calculations.round((Integer.parseInt(threshold)-caffeineConsumedToday), 0);
+        if (left_num>=0){
+            tv_left_num.setText(""+left_num);
+            tv_left_desc_text.setText(" left");
+        }else{
+            tv_left_num.setText(""+(-1*left_num));
+            tv_left_desc_text.setText(" above");
+        }
 
         if (notifications) { createNotification(); }
 
@@ -314,7 +337,7 @@ public class TrackerFragment extends Fragment {
             // hide the notification after its selected
             n.flags |= Notification.FLAG_AUTO_CANCEL;
 
-            notificationManager.notify(0, n);
+            notificationManager.notify(LOW_ID, n);
             showNotification = false;
         }else if (effectsBy!=0 || isInForeground()){
             notificationManager.cancelAll();

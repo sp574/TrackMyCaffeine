@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Preferences">
+
+        <CheckBoxPreference
+            android:key="notif_checkbox_pref"
+            android:title="Notifications"
+            android:summary="Notify when caffeine level is low"
+            android:defaultValue="true"/>
+
+        <EditTextPreference
+            android:key="edit_pref"
+            android:title="Max Daily Threshold"
+            android:summary="400 mg"
+            android:inputType="number"
+            android:defaultValue="400"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Units">
+
+        <ListPreference
+            android:key="units_drinks_pref"
+            android:title="Drinks"
+            android:defaultValue="fl oz"
+            android:summary="ListPreference summary"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues_drinks"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

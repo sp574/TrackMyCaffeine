@@ -1,9 +1,11 @@
 package sleeping_vityaz.trackmycaffeine.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +30,7 @@ import java.util.Locale;
 import java.lang.Runnable;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
 
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
@@ -64,6 +67,11 @@ public class TrackerFragment extends Fragment {
 
     private double caffeineConsumedToday;
     private int effectsBy;
+    private double prevConcentration;
+
+    private SharedPreferences settings;
+    private boolean notifications;
+    private String units;
 
 
     DBTools dbTools = null;
@@ -83,6 +91,15 @@ public class TrackerFragment extends Fragment {
 
         dbTools = DBTools.getInstance(this.getActivity());
 
+
+
+        // Restore preferences
+        if (getActivity()!=null) { settings = PreferenceManager.getDefaultSharedPreferences(getActivity());}
+        notifications = settings.getBoolean("notif_checkbox_pref", true);
+        units = settings.getString("units_drinks_pref", "");
+
+        alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
+
         findViewsById(rootView);
 
         recyclyViewSetUp(rootView);
@@ -91,13 +108,8 @@ public class TrackerFragment extends Fragment {
         calPrev = Calendar.getInstance();
         dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
-        final int i_date = 21*3600*1000, i_start = 20*3600*1000;
+        prevConcentration = 0.0;
 
-        //final double concentration = Calculations.calculateConcentration(i_date, i_start, 0);
-        //results.setText("Concentration of caffeine: " + concentration);
-        //alert("" + concentration);
-
-        //final double concentration = 0.0;
         ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
                                                                                                   Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
         for (HashMap<String, String> hashMap : allRecordsOnThisDate){
@@ -189,6 +201,13 @@ public class TrackerFragment extends Fragment {
     };
 
     private void updateRate() {
+        // Restore preferences
+        if (getActivity()!=null) { settings = PreferenceManager.getDefaultSharedPreferences(getActivity()); }
+        notifications = settings.getBoolean("notif_checkbox_pref", true);
+        units = settings.getString("units_drinks_pref", "");
+
+        alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
+
         double concentration = 0.0;
         caffeineConsumedToday = 0;
         effectsBy = 0;
@@ -197,40 +216,56 @@ public class TrackerFragment extends Fragment {
         calPrev.add(Calendar.DATE, -1);
         ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
                                                                                                   Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
-        //for (HashMap<String, String> hashMap : allRecordsOnThisDate){
 
         for (int i = 0; i < allRecordsOnThisDate.size(); i++) {
-            alert("FROM ARRAYLIST "+allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED));
-            alert("FROM CALENDAR "+Util.convertDateForDB(dateFormat.format(calendar.getTime())));
+            //alert("FROM ARRAYLIST "+allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED));
+            //alert("FROM CALENDAR "+Util.convertDateForDB(dateFormat.format(calendar.getTime())));
             if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) { //only sum up caffeine if consumed today
                 caffeineConsumedToday += Double.parseDouble(allRecordsOnThisDate.get(i).get(CommonConstants.CAFFEINE_MASS));
             }
             // caffeineToStart, start, duration, timeOfInterest
             double caffeineToStart = Double.parseDouble(allRecordsOnThisDate.get(i).get(CommonConstants.CAFFEINE_MASS));
-            int start = 0;
+            int start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
             int duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             int timeOfInterest = 0;
+            int effectsDelay = 6*3600*1000;
             if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) {
-                start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
+
                 timeOfInterest = Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
-                if (effectsBy<(start+12*3600*1000)){ // date is today
-                    effectsBy = start+12*3600*1000; // check later, might need to correct this time later
+                if (effectsBy<(start+effectsDelay)){ // date is today
+                    effectsBy = start+effectsDelay; // check later, might need to correct this time later
                 }
             } else{ // Consumed caffeine yesterday
                 int _24hrsInMilliseconds = 24*3600*1000;
-                start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
                 timeOfInterest = _24hrsInMilliseconds+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());
-                if (start > 12*3600*1000 && effectsBy<(start+12*3600*1000-24*3600*1000)){ // date is today, before afternoon
-                    effectsBy = start-12*3600*1000;
+                if (start > 18*3600*1000 && effectsBy<(start+effectsDelay-24*3600*1000)){ // date is today, before afternoon
+                    effectsBy = start+effectsDelay-24*3600*1000;
                 }
             }
 
             duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             concentration += Calculations.calcConcentration(caffeineToStart, start, duration, timeOfInterest);
+
         }
         tv_total.setText("" + ((int) Calculations.round(caffeineConsumedToday, 0)));
         tv_rate_num.setText("" + (int) concentration);
-        tv_effects_desc_time.setText(Util.convertTimeForDisplay(effectsBy));
+        if (effectsBy!=0) {
+            tv_effects_desc_time.setText(Util.convertTimeForDisplay(effectsBy));
+        }else{
+            tv_effects_desc_text.setText("Get some caffeine");
+            tv_effects_desc_time.setText("in you");
+        }
+        if (prevConcentration < concentration){ // rising rate
+            iv_rate_indicator.setVisibility(View.VISIBLE);
+            if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.up_arrow));
+        }else if (prevConcentration==concentration){ // stable
+            iv_rate_indicator.setVisibility(View.INVISIBLE);
+        }else{ // falling rate
+            iv_rate_indicator.setVisibility(View.VISIBLE);
+            if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.down_arrow));
+        }
+
+        prevConcentration = concentration;
     }
 
     class MyTimerTask extends TimerTask {

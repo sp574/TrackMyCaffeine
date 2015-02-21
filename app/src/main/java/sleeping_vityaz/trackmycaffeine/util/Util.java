@@ -91,7 +91,7 @@ public class Util {
         }
         int h = timeInts / (3600 * 1000);
         int m = (timeInts%3600000)/(1000*60);
-        Log.d("Util","timeInts="+timeInts+" h="+h+" m="+m);
+        //Log.d("Util","timeInts="+timeInts+" h="+h+" m="+m);
         if (m < 30 && h < 12) return h + "am";
         else if (m < 30 && h >= 12){ if (h==12) return h+"pm"; else return (h-12) + "pm";}
         else if (m > 30 && h < 12){ if (h==11) return (h+1)+"pm"; else return (h + 1) + "am";}

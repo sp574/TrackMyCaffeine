@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".fragments.AddNewCaffeineFragment" android:theme="@style/Theme.AppCompat.Light.AddNewCaffeineFragment"/>
-        <activity android:name=".Settings" />
+        <activity android:name=".Settings" android:label="Settings" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName = ".MainActivity"/>
     </application>
 
 </manifest>

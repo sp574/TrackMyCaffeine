@@ -12,7 +12,7 @@
         <EditTextPreference
             android:key="threshold_pref"
             android:title="Max Daily Threshold"
-            android:summary="400 mg"
+            android:summary="400mg"
             android:inputType="number"
             android:defaultValue="400"
             />
@@ -25,7 +25,7 @@
             android:key="units_drinks_pref"
             android:title="Drinks"
             android:defaultValue="fl oz"
-            android:summary="ListPreference summary"
+            android:summary="US, fl oz"
             android:entries="@array/listentries"
             android:entryValues="@array/listvalues_drinks"/>
 

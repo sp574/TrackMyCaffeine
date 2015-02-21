@@ -2,7 +2,11 @@ package sleeping_vityaz.trackmycaffeine;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -30,6 +34,8 @@ public class Settings extends ActionBarActivity {
                 new PreferenceFragmentOne()).commit();
     }
 
+
+
     /*public boolean onOptionsItemSelected(MenuItem item){
         Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
         startActivityForResult(myIntent, 0);
@@ -40,7 +46,9 @@ public class Settings extends ActionBarActivity {
     /**
      * This fragment shows the preferences for the first header.
      */
-    public static class PreferenceFragmentOne extends PreferenceFragment {
+    public static class PreferenceFragmentOne extends PreferenceFragment implements
+            SharedPreferences.OnSharedPreferenceChangeListener,
+            Preference.OnPreferenceClickListener{
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -54,7 +62,45 @@ public class Settings extends ActionBarActivity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.fragmented_preferences);
         }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+            Preference pref = findPreference(key);
+            Log.d("Settings", "key: "+key.toString());
+            if (pref instanceof EditTextPreference) {
+                EditTextPreference editTextPref = (EditTextPreference) pref;
+                pref.setSummary(editTextPref.getText()+"mg");
+            }
+            if (pref instanceof ListPreference) {
+                ListPreference listPref = (ListPreference) pref;
+                pref.setSummary(listPref.getEntry());
+            }
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            return false;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            MyApplication.activityResumed();
+            getPreferenceScreen().getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            MyApplication.activityPaused();
+            getPreferenceScreen().getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
+
+        }
     }
+
 
 
 

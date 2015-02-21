@@ -37,6 +37,7 @@ import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
 import sleeping_vityaz.trackmycaffeine.MainActivity;
+import sleeping_vityaz.trackmycaffeine.MyApplication;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.RecyclerViewAdapter;
@@ -83,7 +84,6 @@ public class TrackerFragment extends Fragment {
     private int LOW_ID = 0;
     private int ABOVE_ID = 1;
     private boolean showNotification = true;
-    private boolean mIsInForegroundMode;
 
 
     DBTools dbTools = null;
@@ -117,6 +117,14 @@ public class TrackerFragment extends Fragment {
            notificationManager = (NotificationManager) getActivity().getSystemService(mContext.NOTIFICATION_SERVICE);
         }
         findViewsById(rootView);
+
+        if (mContext!=null) {
+            // Store our shared preference
+            SharedPreferences sp = mContext.getSharedPreferences("OURINFO", mContext.MODE_PRIVATE);
+            SharedPreferences.Editor ed = sp.edit();
+            ed.putBoolean("active", true);
+            ed.commit();
+        }
 
 
 
@@ -204,21 +212,18 @@ public class TrackerFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        mIsInForegroundMode = true;
+        MyApplication.activityResumed();
         tv_total.setText(""+((int) Calculations.round(caffeineConsumedToday, 0)));
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        mIsInForegroundMode = false;
+        MyApplication.activityPaused();
         //handler.removeCallbacks(r);
     }
 
-    //
-    public boolean isInForeground() {
-        return mIsInForegroundMode;
-    }
+
 
     private void alert(String s) {
         Log.d(TAG, s);
@@ -321,7 +326,7 @@ public class TrackerFragment extends Fragment {
     }
 
     private void createNotification() {
-        if (getActivity()!=null && effectsBy==0 && showNotification && !isInForeground()) {
+        if (getActivity()!=null && effectsBy==0 && showNotification && !MyApplication.isActivityVisible()) {
             Intent intent = new Intent(this.getActivity(), AddNewCaffeineFragment.class);
             PendingIntent pIntent = PendingIntent.getActivity(this.getActivity(), 0, intent, 0);
 
@@ -339,7 +344,7 @@ public class TrackerFragment extends Fragment {
 
             notificationManager.notify(LOW_ID, n);
             showNotification = false;
-        }else if (effectsBy!=0 || isInForeground()){
+        }else if (effectsBy!=0 || MyApplication.isActivityVisible()){
             notificationManager.cancelAll();
             showNotification = true;
         }

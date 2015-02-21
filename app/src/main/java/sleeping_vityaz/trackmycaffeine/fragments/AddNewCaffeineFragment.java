@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import sleeping_vityaz.trackmycaffeine.MyApplication;
 import sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView;
 import sleeping_vityaz.trackmycaffeine.databases.DBAdapter;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
@@ -77,7 +78,6 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     private Calendar calendar;
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,9 +199,18 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+        MyApplication.activityPaused();
+    }
+
+    @Override
     public void onResume() {
         // Example of reattaching to the fragment
         super.onResume();
+
+        MyApplication.activityResumed();
+
         RadialTimePickerDialog rtpd = (RadialTimePickerDialog) getSupportFragmentManager().findFragmentByTag(
                 FRAG_TAG_TIME_PICKER);
         if (rtpd != null) {

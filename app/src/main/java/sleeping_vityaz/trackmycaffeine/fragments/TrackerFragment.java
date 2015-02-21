@@ -1,6 +1,10 @@
 package sleeping_vityaz.trackmycaffeine.fragments;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +36,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
+import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.RecyclerViewAdapter;
@@ -73,6 +78,10 @@ public class TrackerFragment extends Fragment {
     private boolean notifications;
     private String units;
 
+    NotificationManager notificationManager;
+    private boolean showNotification = true;
+    private boolean mIsInForegroundMode;
+
 
     DBTools dbTools = null;
 
@@ -100,6 +109,9 @@ public class TrackerFragment extends Fragment {
 
         alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
 
+        if (getActivity()!=null) {
+           notificationManager = (NotificationManager) getActivity().getSystemService(mContext.NOTIFICATION_SERVICE);
+        }
         findViewsById(rootView);
 
         recyclyViewSetUp(rootView);
@@ -178,13 +190,20 @@ public class TrackerFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        mIsInForegroundMode = true;
         tv_total.setText(""+((int) Calculations.round(caffeineConsumedToday, 0)));
     }
 
     @Override
     public void onPause(){
         super.onPause();
+        mIsInForegroundMode = false;
         //handler.removeCallbacks(r);
+    }
+
+    //
+    public boolean isInForeground() {
+        return mIsInForegroundMode;
     }
 
     private void alert(String s) {
@@ -206,7 +225,7 @@ public class TrackerFragment extends Fragment {
         notifications = settings.getBoolean("notif_checkbox_pref", true);
         units = settings.getString("units_drinks_pref", "");
 
-        alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
+        //alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
 
         double concentration = 0.0;
         caffeineConsumedToday = 0;
@@ -243,6 +262,14 @@ public class TrackerFragment extends Fragment {
                 }
             }
 
+            // if effectsBy < time now, effectsBy = 0
+            if (effectsBy < Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis())){
+                effectsBy = 0;
+            }
+
+            alert("effectsBy = "+effectsBy);
+            alert("time now = "+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis()));
+
             duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             concentration += Calculations.calcConcentration(caffeineToStart, start, duration, timeOfInterest);
 
@@ -265,7 +292,34 @@ public class TrackerFragment extends Fragment {
             if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.down_arrow));
         }
 
+        if (notifications) { createNotification(); }
+
         prevConcentration = concentration;
+    }
+
+    private void createNotification() {
+        if (getActivity()!=null && effectsBy==0 && showNotification && !isInForeground()) {
+            Intent intent = new Intent(this.getActivity(), AddNewCaffeineFragment.class);
+            PendingIntent pIntent = PendingIntent.getActivity(this.getActivity(), 0, intent, 0);
+
+            // build notification
+            // the addAction re-use the same intent to keep the example short
+            Notification n = new Notification.Builder(this.getActivity())
+                    .setContentTitle("Feeling sluggish?")
+                    .setContentText("Your caffeine levels are too low!")
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentIntent(pIntent)
+                    .setAutoCancel(true).build();
+
+            // hide the notification after its selected
+            n.flags |= Notification.FLAG_AUTO_CANCEL;
+
+            notificationManager.notify(0, n);
+            showNotification = false;
+        }else if (effectsBy!=0 || isInForeground()){
+            notificationManager.cancelAll();
+            showNotification = true;
+        }
     }
 
     class MyTimerTask extends TimerTask {

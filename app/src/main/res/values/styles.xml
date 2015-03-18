@@ -10,7 +10,7 @@
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
     </style>
 
-    <style name="Theme.AppCompat.Light.AddNewCaffeineFragment" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.AppCompat.Light.AddNewCaffeineFragment" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:autoCompleteTextViewStyle">@style/Widget.AutoCompleteTextViewLight</item>
         <item name="android:dropDownItemStyle">@style/Widget.DropDownItemLight</item>
     </style>

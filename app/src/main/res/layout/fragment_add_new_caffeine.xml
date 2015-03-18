@@ -1,122 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/app_margin"
     android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/content_margin"
-        android:gravity="left"
-        android:text="Add caffeinated item"
-        android:textSize="20sp" />
-
-
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/Theme.AppCompat.Light" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_marginLeft="@dimen/app_margin"
+        android:layout_marginRight="@dimen/app_margin"
+        android:layout_marginTop="@dimen/app_margin"
+        android:orientation="vertical">
 
         <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_date"
+                android:id="@+id/tv_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Date" />
+                android:text="Item"
+                android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/et_date"
-                android:layout_width="wrap_content"
+            <sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView
+                android:id="@+id/ac_product_autocomplete"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:onClick="onClick" />
-
+                android:completionThreshold="1"
+                android:textColor="@color/primary_text"
+                android:textColorHint="@color/primary_text"></sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView>
 
         </TableLayout>
 
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/component_margin">
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Date"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/et_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:onClick="onClick" />
+
+
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start time"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/et_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:onClick="onClick" />
+            </TableLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_start"
+                android:id="@+id/tv_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Start time" />
+                android:layout_gravity="center_vertical"
+                android:text="Duration (in minutes)"
+                android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/et_start"
-                android:layout_width="match_parent"
+                android:id="@+id/et_duration"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/content_margin"
                 android:clickable="true"
+                android:maxLength="2"
+                android:text="0"
+                android:ems="4"
+                android:onClick="onClick"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="How much did you drink?"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/content_margin"
+                android:maxLength="6"
+                android:clickable="true"
+                android:inputType="numberDecimal"
+                android:ems="4"
                 android:onClick="onClick" />
-        </TableLayout>
+        </LinearLayout>
 
+        <RadioGroup
+            android:id="@+id/rg_units"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <RadioButton
+                android:id="@+id/ounces"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="fl oz" />
 
-    <sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView
-        android:id="@+id/ac_product_autocomplete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:completionThreshold="1"
-        android:textColor="@color/primary_text"
-        android:textColorHint="@color/primary_text"></sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/ml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/content_margin"
+                android:text="mL" />
+        </RadioGroup>
 
         <TextView
-            android:id="@+id/tv_volume"
+            android:id="@+id/tv_caffeine_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="How much did you drink?"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp40_margin"
+            android:text="Caffeine content"
+            android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/et_volume"
+        <TextView
+            android:id="@+id/tv_caffeine_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/content_margin"
-            android:clickable="true"
-            android:ems="4"
-            android:onClick="onClick"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_horizontal"
+            android:text="0"
+            android:textSize="50sp" />
+
+        <!-- add numberpad/edittext for volume consumed -->
+
+
     </LinearLayout>
-
-    <RadioGroup
-        android:id="@+id/rg_units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="left"
-        >
-
-        <RadioButton
-            android:id="@+id/ounces"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="fl oz"/>
-
-        <RadioButton
-            android:id="@+id/ml"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/content_margin"
-            android:text="mL" />
-    </RadioGroup>
-
-    <!-- add numberpad/edittext for volume consumed -->
-
-
-</LinearLayout>
+</RelativeLayout>

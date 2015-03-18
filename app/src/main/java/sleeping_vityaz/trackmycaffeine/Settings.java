@@ -19,6 +19,8 @@ import java.util.List;
 
 public class Settings extends ActionBarActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,10 @@ public class Settings extends ActionBarActivity {
     public static class PreferenceFragmentOne extends PreferenceFragment implements
             SharedPreferences.OnSharedPreferenceChangeListener,
             Preference.OnPreferenceClickListener{
+
+        private String KEY_DRINKS_UNITS = "units_drinks_pref";
+        private String KEY_DAILY_THRESHOLD = "threshold_pref";
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -61,21 +67,15 @@ public class Settings extends ActionBarActivity {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.fragmented_preferences);
+            updatePreferences(KEY_DRINKS_UNITS);
+            updatePreferences(KEY_DAILY_THRESHOLD);
+
+
         }
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-            Preference pref = findPreference(key);
-            Log.d("Settings", "key: "+key.toString());
-            if (pref instanceof EditTextPreference) {
-                EditTextPreference editTextPref = (EditTextPreference) pref;
-                pref.setSummary(editTextPref.getText()+"mg");
-            }
-            if (pref instanceof ListPreference) {
-                ListPreference listPref = (ListPreference) pref;
-                pref.setSummary(listPref.getEntry());
-            }
+                updatePreferences(key);
         }
 
         @Override
@@ -98,6 +98,19 @@ public class Settings extends ActionBarActivity {
             getPreferenceScreen().getSharedPreferences()
                     .unregisterOnSharedPreferenceChangeListener(this);
 
+        }
+
+        private void updatePreferences(String key){
+            Preference pref = findPreference(key);
+            Log.d("Settings", "key: "+key.toString());
+            if (pref instanceof EditTextPreference) {
+                EditTextPreference editTextPref = (EditTextPreference) pref;
+                pref.setSummary(editTextPref.getText()+"mg");
+            }
+            if (pref instanceof ListPreference) {
+                ListPreference listPref = (ListPreference) pref;
+                pref.setSummary(listPref.getEntry());
+            }
         }
     }
 

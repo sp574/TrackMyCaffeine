@@ -269,7 +269,7 @@ public class TrackerFragment extends Fragment {
             int start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
             int duration = Integer.parseInt(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             int timeOfInterest = 0;
-            int effectsDelay = 6*3600*1000;
+            int effectsDelay = duration+6*3600*1000;
             if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) {
 
                 timeOfInterest = Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis());

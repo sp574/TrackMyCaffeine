@@ -15,6 +15,7 @@ import sleeping_vityaz.trackmycaffeine.fragments.AddNewCaffeineFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.CustomItemsFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.GraphFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.MyStatsFragment;
+import sleeping_vityaz.trackmycaffeine.fragments.PastRecordsFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.StoreFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.TrackerFragment;
 
@@ -28,6 +29,7 @@ public class MainActivity extends MaterialNavigationDrawer {
         this.addSection(newSection(getString(R.string.tracker), new TrackerFragment()));
         this.addSection(newSection(getString(R.string.custom_items), new CustomItemsFragment()));
         this.addSection(newSection(getString(R.string.graph), new GraphFragment()));
+        this.addSection(newSection(getString(R.string.past_records), new PastRecordsFragment()));
         this.addSection(newSection(getString(R.string.my_stats), new MyStatsFragment()));
         this.addSection(newSection(getString(R.string.store), new StoreFragment()));
         this.addSection(newSection(getString(R.string.settings), R.drawable.ic_settings_black_24dp, new Intent(this, Settings.class)));

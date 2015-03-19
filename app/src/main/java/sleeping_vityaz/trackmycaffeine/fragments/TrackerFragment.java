@@ -66,6 +66,7 @@ public class TrackerFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<HashMap<String, String>> mDataSet;
+    private ArrayList<HashMap<String, String>> allRecordsOnThisDate;
 
     private Calendar calendar;
     private Calendar calPrev;
@@ -126,18 +127,19 @@ public class TrackerFragment extends Fragment {
             ed.commit();
         }
 
-
-
-        recyclyViewSetUp(rootView);
-
         calendar = Calendar.getInstance();
         calPrev = Calendar.getInstance();
         dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
         prevConcentration = 0.0;
 
-        ArrayList<HashMap<String, String>> allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
-                                                                                                  Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
+        allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
+                Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
+
+
+        recyclyViewSetUp(rootView);
+
+
         for (HashMap<String, String> hashMap : allRecordsOnThisDate){
             caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
         }
@@ -168,7 +170,7 @@ public class TrackerFragment extends Fragment {
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
 
         // Adapter:
-        mDataSet = dbTools.getAllRecords();
+        mDataSet = allRecordsOnThisDate;//dbTools.getAllRecords();
         mAdapter = new RecyclerViewAdapter(this.getActivity(), mDataSet);
         ((RecyclerViewAdapter) mAdapter).setMode(Attributes.Mode.Single);
         recyclerView.setAdapter(mAdapter);
@@ -265,7 +267,7 @@ public class TrackerFragment extends Fragment {
             // caffeineToStart, start, duration, timeOfInterest
             double caffeineToStart = Double.parseDouble(allRecordsOnThisDate.get(i).get(CommonConstants.CAFFEINE_MASS));
             int start = Util.timeToMilliseconds(allRecordsOnThisDate.get(i).get(CommonConstants.TIME_STARTED));
-            int duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
+            int duration = Integer.parseInt(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             int timeOfInterest = 0;
             int effectsDelay = 6*3600*1000;
             if (allRecordsOnThisDate.get(i).get(CommonConstants.DATE_CREATED).equals(Util.convertDateForDB(dateFormat.format(calendar.getTime())))) {
@@ -290,7 +292,6 @@ public class TrackerFragment extends Fragment {
             alert("effectsBy = "+effectsBy);
             alert("time now = "+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis()));
 
-            duration = 0;//Long.parseLong(allRecordsOnThisDate.get(i).get(CommonConstants.DURATION))*60*1000;
             concentration += Calculations.calcConcentration(caffeineToStart, start, duration, timeOfInterest);
 
         }

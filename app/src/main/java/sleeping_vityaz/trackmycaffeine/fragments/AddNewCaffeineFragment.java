@@ -67,11 +67,13 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
 
     private TextView tv_date;
     private TextView tv_start;
+    private TextView tv_duration;
     private TextView tv_caffeine_content;
     private TextView tv_caffeine_num;
     private EditText et_date;
     private EditText et_start;
     private EditText et_volume;
+    private EditText et_duration;
     private RadioButton rb_floz;
     private RadioButton rb_ml;
     private RadioGroup rg_units;
@@ -199,10 +201,12 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     private void findViewsById() {
         tv_date = (TextView) findViewById(R.id.tv_date);
         tv_start = (TextView) findViewById(R.id.tv_start);
+        tv_duration = (TextView) findViewById(R.id.tv_duration);
         tv_caffeine_content = (TextView) findViewById(R.id.tv_caffeine_content);
         tv_caffeine_num = (TextView) findViewById(R.id.tv_caffeine_num);
         et_date = (EditText) findViewById(R.id.et_date);
         et_start = (EditText) findViewById(R.id.et_start);
+        et_duration = (EditText) findViewById(R.id.et_duration);
         myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.ac_product_autocomplete);
         et_volume = (EditText) findViewById(R.id.et_volume);
         rg_units = (RadioGroup) findViewById(R.id.rg_units);
@@ -277,6 +281,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
                 queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
                 queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
+                queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
 
                 alert(queryValuesMap.toString());
 

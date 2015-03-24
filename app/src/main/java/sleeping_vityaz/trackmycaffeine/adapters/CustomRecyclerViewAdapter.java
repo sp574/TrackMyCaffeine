@@ -126,9 +126,10 @@ public class CustomRecyclerViewAdapter extends RecyclerSwipeAdapter<CustomRecycl
         viewHolder.iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String keyValue = viewHolder.tv_keyId.getText().toString();
+                String keyValue = viewHolder.tv_product.getText().toString();
                 Intent theIntent = new Intent(mContext, EditCustomRecord.class);
-                theIntent.putExtra("keyId", keyValue);
+                theIntent.putExtra("product", keyValue);
+                theIntent.putExtra("keyId", viewHolder.tv_keyId.getText().toString());
                 Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
                 mContext.startActivity(theIntent);
 

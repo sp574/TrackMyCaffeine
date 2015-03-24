@@ -1,4 +1,4 @@
-package sleeping_vityaz.trackmycaffeine.fragments;
+package sleeping_vityaz.trackmycaffeine;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,16 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-
 import com.android.datetimepicker.date.DatePickerDialog;
-import com.android.datetimepicker.time.RadialPickerLayout;
-import com.android.datetimepicker.time.TimePickerDialog;
 import com.doomonafireball.betterpickers.numberpicker.NumberPickerBuilder;
 import com.doomonafireball.betterpickers.numberpicker.NumberPickerDialogFragment;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
@@ -32,40 +28,27 @@ import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Calendar;
-
 import java.util.HashMap;
-import java.util.List;
+import java.util.Locale;
 
-import sleeping_vityaz.trackmycaffeine.MyApplication;
-import sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView;
 import sleeping_vityaz.trackmycaffeine.databases.DBAdapter;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
-import sleeping_vityaz.trackmycaffeine.MainActivity;
-import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.util.Calculations;
 import sleeping_vityaz.trackmycaffeine.util.CommonConstants;
 import sleeping_vityaz.trackmycaffeine.util.Util;
 
 /**
- * Created by naja-ox on 1/30/15.
+ * Created by naja-ox on 3/23/15.
  */
-public class AddNewCaffeineFragment extends ActionBarActivity implements DatePickerDialog.OnDateSetListener, RadialTimePickerDialog.OnTimeSetListener, NumberPickerDialogFragment.NumberPickerDialogHandler {
+public class EditRecord extends ActionBarActivity implements DatePickerDialog.OnDateSetListener, RadialTimePickerDialog.OnTimeSetListener, NumberPickerDialogFragment.NumberPickerDialogHandler {
 
-    public static final String TAG = "ADD-NEW-CAFFEINE-FRAGMENT";
+    public static final String TAG = "UPDATE-CAFFEINE-ACTIVITY";
     private static final String FRAG_TAG_TIME_PICKER = "timePickerDialogFragment";
     private boolean mHasDialogFrame;
     private static final String TIME_PATTERN = "hh:mm a";
 
-    CustomAutoCompleteView myAutoComplete;
-    // adapter for auto-complete
-    ArrayAdapter<String> myAdapter;
     DBAdapter dbAdapter;
-
-
-    // just to add some initial value
-    String[] item = new String[]{"Please search..."};
 
     private TextView tv_item;
     private TextView tv_date;
@@ -81,27 +64,34 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     private RadioButton rb_ml;
     private RadioGroup rg_units;
 
-    private SharedPreferences settings;
-    private String units;
 
     private Calendar calendar;
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
 
+    private SharedPreferences settings;
+    private String units;
+
+    private String keyId;
+
+    DBTools dbTools = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_add_new_caffeine);
+        setContentView(R.layout.edit_record);
 
-        if (savedInstanceState == null) {
-            mHasDialogFrame = findViewById(R.id.frame) != null;
-        }
+        dbTools = DBTools.getInstance(getApplicationContext());
 
         // Restore preferences
         if (this != null) {
             settings = PreferenceManager.getDefaultSharedPreferences(this);
         }
         units = settings.getString("units_drinks_pref", "");
+
+        if (savedInstanceState == null) {
+            mHasDialogFrame = findViewById(R.id.frame) != null;
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -116,16 +106,11 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
         timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
 
-        update();
-        myAutoComplete.addTextChangedListener(watch);
-        et_volume.addTextChangedListener(volumeWatch);
+        getInfoFromDB();
 
-        // set our adapter
-        myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
-        myAutoComplete.setAdapter(myAdapter);
+        et_volume.addTextChangedListener(watch);
+        radioGroupListener();
 
-        if (units.equals("fl oz")) rb_floz.setChecked(true);
-        else rb_ml.setChecked(true);
 
         rg_units.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -146,114 +131,42 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
 
     }
 
+    private void radioGroupListener() {
+        rg_units.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.ounces:
+                        if (!et_volume.getText().toString().equals("")) {
+                            Log.d(TAG, "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1));
+                            et_volume.setText("" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1));
+                        }
+                        break;
+                    case R.id.ml:
+                        if (!et_volume.getText().toString().equals(""))
+                            et_volume.setText("" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) / 0.033814), 1));
+                        break;
+                }
+            }
+        });
+    }
+
     TextWatcher watch = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence userInput, int start, int before, int count) {
-            // query the database based on the user input
-            item = getItemsFromDb(userInput.toString());
-
-            // update the adapater
-            myAdapter.notifyDataSetChanged();
-            myAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.custom_autocomplete_dropdown, item);
-            myAutoComplete.setAdapter(myAdapter);
-
+            // updare tv_caffeine_num
+            getVolumeInfoAndSetFields(tv_item.getText().toString());
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             // see how much volume is set in the product db
-            getVolumeInfoAndSetFields(myAutoComplete.getText().toString());
+            getVolumeInfoAndSetFields(tv_item.getText().toString());
         }
     };
-
-    TextWatcher volumeWatch = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence userInput, int start, int before, int count) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            // see how much volume is set in the product db
-            updateVolumeInfo(myAutoComplete.getText().toString());
-        }
-    };
-
-    private void updateVolumeInfo(String product) {
-        dbAdapter.open();
-        HashMap<String, String> recordMap = dbAdapter.getRecordInfo(product);
-        dbAdapter.close();
-
-        alert(recordMap.toString());
-        if (!recordMap.isEmpty() && !et_volume.getText().toString().equals("")) {
-            // setting caffeine num
-            if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null) {
-                String toDB_volume = "";
-                if (rb_floz.isChecked()) {
-                    toDB_volume = et_volume.getText().toString();
-                } else {
-                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
-                }
-                tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
-            }
-        }
-    }
-
-    private void getVolumeInfoAndSetFields(String product) {
-        dbAdapter.open();
-        HashMap<String, String> recordMap = dbAdapter.getRecordInfo(product);
-        dbAdapter.close();
-
-        if (!recordMap.isEmpty()) {
-
-            if (units.equals("fl oz")) {
-                et_volume.setText(recordMap.get(CommonConstants.C_VOLUME_DRINK));
-                //rb_floz.setChecked(true);
-            } else {
-                et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK)) / 0.033814), 1));
-                //rb_ml.setChecked(true);
-            }
-            // setting caffeine num
-            if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null) {
-                String toDB_volume = "";
-                if (rb_floz.isChecked()) {
-                    toDB_volume = et_volume.getText().toString();
-                } else if (rb_ml.isChecked()) {
-                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
-                }
-                tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
-            }
-        }
-    }
-
-    // this function is used in CustomAutoCompleteTextChangedListener.java
-    public String[] getItemsFromDb(String searchTerm) {
-
-        dbAdapter.open();
-
-        // add items on the array dynamically
-        List<String> products = dbAdapter.read(searchTerm);
-        int rowCount = products.size();
-
-        String[] item = new String[rowCount];
-        int x = 0;
-
-        for (String product : products) {
-            item[x] = product;
-            x++;
-        }
-        dbAdapter.close();
-
-        return item;
-    }
 
     private void findViewsById() {
         tv_item = (TextView) findViewById(R.id.tv_item);
@@ -265,43 +178,10 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         et_date = (EditText) findViewById(R.id.et_date);
         et_start = (EditText) findViewById(R.id.et_start);
         et_duration = (EditText) findViewById(R.id.et_duration);
-        myAutoComplete = (CustomAutoCompleteView) findViewById(R.id.ac_product_autocomplete);
         et_volume = (EditText) findViewById(R.id.et_volume);
         rg_units = (RadioGroup) findViewById(R.id.rg_units);
         rb_floz = (RadioButton) findViewById(R.id.ounces);
         rb_ml = (RadioButton) findViewById(R.id.ml);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MyApplication.activityPaused();
-    }
-
-    @Override
-    public void onResume() {
-        // Example of reattaching to the fragment
-        super.onResume();
-
-        MyApplication.activityResumed();
-
-        RadialTimePickerDialog rtpd = (RadialTimePickerDialog) getSupportFragmentManager().findFragmentByTag(
-                FRAG_TAG_TIME_PICKER);
-        if (rtpd != null) {
-            rtpd.setOnTimeSetListener(this);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_new, menu);
-        return true;
     }
 
     @Override
@@ -314,17 +194,18 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
             alert(et_date.getText().toString());
             if (et_date.getText().toString() != ""
                     && !et_start.getText().toString().equals("")
-                    && !myAutoComplete.getText().toString().equals("")
                     && !et_volume.getText().toString().equals("")
                     ) {
-                final DBTools dbTools = DBTools.getInstance(this);
+                dbTools = DBTools.getInstance(this);
 
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 dbAdapter.open();
-                HashMap<String, String> recordMap = dbAdapter.getRecordInfo(myAutoComplete.getText().toString());
+                HashMap<String, String> recordMap = dbAdapter.getRecordInfo(tv_item.getText().toString());
                 dbAdapter.close();
+
+                if (null == recordMap.get(CommonConstants.C_DENSITY_CAFFEINE)) alert("It's null");
 
                 String toDB_volume = "";
                 if (rb_floz.isChecked()) {
@@ -334,7 +215,8 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 }
                 // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                 HashMap<String, String> queryValuesMap = new HashMap<String, String>();
-                queryValuesMap.put(CommonConstants.PRODUCT, myAutoComplete.getText().toString());
+                queryValuesMap.put(CommonConstants.KEY_ID, keyId);
+                queryValuesMap.put(CommonConstants.PRODUCT, tv_item.getText().toString());
                 queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
                 queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
                 queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
@@ -343,7 +225,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
 
                 alert(queryValuesMap.toString());
 
-                dbTools.insertRecord(queryValuesMap);
+                dbTools.updateRecord(queryValuesMap);
 
                 startActivity(intent);
                 finish();
@@ -353,9 +235,28 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_new, menu);
+        return true;
+    }
 
-    private void alert(String s) {
-        Log.d(TAG, s);
+    private void getVolumeInfoAndSetFields(String product) {
+        dbAdapter.open();
+        HashMap<String, String> recordMap = dbAdapter.getRecordInfo(product);
+        dbAdapter.close();
+
+        // setting caffeine num
+        if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null && !et_volume.getText().toString().equals("")) {
+            String toDB_volume = "";
+            if (rb_floz.isChecked()) {
+                toDB_volume = et_volume.getText().toString();
+            } else if (rb_ml.isChecked()) {
+                toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+            }
+            tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
+        }
     }
 
     private void update() {
@@ -371,7 +272,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
             case R.id.et_start:
                 DateTime now = DateTime.now();
                 RadialTimePickerDialog timePickerDialog = RadialTimePickerDialog
-                        .newInstance(AddNewCaffeineFragment.this, now.getHourOfDay(), now.getMinuteOfHour(), false);
+                        .newInstance(EditRecord.this, now.getHourOfDay(), now.getMinuteOfHour(), false);
                 if (mHasDialogFrame) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -406,5 +307,32 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     @Override
     public void onDialogNumberSet(int reference, int number, double decimal, boolean isNegative, double fullNumber) {
         et_volume.setText("" + fullNumber);
+    }
+
+
+    private void alert(String s) {
+        Log.d(TAG, s);
+    }
+
+    public void getInfoFromDB() {
+        Intent theIntent = getIntent();
+        keyId = theIntent.getStringExtra("keyId");
+
+        HashMap<String, String> recordMap = dbTools.getRecordInfo(keyId);
+        if (recordMap.size() != 0) {
+            tv_item.setText(recordMap.get(CommonConstants.PRODUCT));
+            et_date.setText(Util.convertDateFromDB(recordMap.get(CommonConstants.DATE_CREATED)));
+            et_start.setText(Util.convertTimeFromDB(recordMap.get(CommonConstants.TIME_STARTED)));
+            et_duration.setText(recordMap.get(CommonConstants.DURATION));
+            tv_caffeine_num.setText(recordMap.get(CommonConstants.CAFFEINE_MASS) + "mg");
+
+            if (units.equals("fl oz")) {
+                et_volume.setText(recordMap.get(CommonConstants.DRINK_VOLUME));
+                rb_floz.setChecked(true);
+            } else {
+                et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.DRINK_VOLUME)) / 0.033814), 1));
+                rb_ml.setChecked(true);
+            }
+        }
     }
 }

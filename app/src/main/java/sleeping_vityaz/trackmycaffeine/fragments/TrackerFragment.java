@@ -129,6 +129,7 @@ public class TrackerFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         calPrev = Calendar.getInstance();
+        calPrev.add(Calendar.DATE, -1);
         dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 
         prevConcentration = 0.0;

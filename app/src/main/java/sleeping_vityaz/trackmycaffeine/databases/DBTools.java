@@ -103,6 +103,26 @@ public class DBTools extends SQLiteOpenHelper {
 
     }
 
+    public int updateRecord(HashMap<String, String> queryValues){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(CommonConstants.PRODUCT, queryValues.get(CommonConstants.PRODUCT));
+        values.put(CommonConstants.DRINK_VOLUME, queryValues.get(CommonConstants.DRINK_VOLUME));
+        values.put(CommonConstants.CAFFEINE_MASS, queryValues.get(CommonConstants.CAFFEINE_MASS));
+        values.put(CommonConstants.DATE_CREATED, queryValues.get(CommonConstants.DATE_CREATED));
+        values.put(CommonConstants.TIME_STARTED, queryValues.get(CommonConstants.TIME_STARTED));
+        values.put(CommonConstants.DURATION, queryValues.get(CommonConstants.DURATION));
+
+
+        return database.update(CommonConstants.HISTORY_TABLE, values,
+                CommonConstants.KEY_ID + " = ?", new String[] {queryValues.get(CommonConstants.KEY_ID) });
+
+
+    }
+
     public void deleteRecord(String id) {
 
         SQLiteDatabase database = this.getWritableDatabase();

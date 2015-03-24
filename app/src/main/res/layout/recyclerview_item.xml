@@ -10,15 +10,39 @@
         swipe:horizontalSwipeOffset="0dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="160dp"
             android:layout_height="80dp"
             android:background="#FF5534"
             android:gravity="center"
             android:tag="Bottom3"
-            android:weightSum="10">
+            android:weightSum="2">
 
             <ImageView
-                android:id="@+id/trash"
+                android:id="@+id/iv_edit"
+                android:layout_width="27dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_launcher" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Delete Item?"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/bt_edit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="0"
+                android:background="#ffffff"
+                android:text="Yes,Delete"
+                android:textColor="#FF5534" />
+
+            <ImageView
+                android:id="@+id/iv_delete"
                 android:layout_width="27dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -27,16 +51,16 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="0"
                 android:text="Delete Item?"
                 android:textColor="#fff"
                 android:textSize="17sp" />
 
             <Button
-                android:id="@+id/delete"
+                android:id="@+id/bt_delete"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_weight="4"
+                android:layout_weight="0"
                 android:background="#ffffff"
                 android:text="Yes,Delete"
                 android:textColor="#FF5534" />

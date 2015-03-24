@@ -1,12 +1,17 @@
 package sleeping_vityaz.trackmycaffeine.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Image;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +22,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 
+import sleeping_vityaz.trackmycaffeine.EditRecord;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.util.Calculations;
@@ -36,7 +42,10 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         SwipeLayout swipeLayout;
         TextView tv_keyId, tv_caffeine_mass, tv_product, tv_date, tv_time, tv_drink_volume;
-        Button buttonDelete;
+        ImageView iv_edit, iv_delete;
+        Button buttonDelete, buttonEdit;
+
+
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
@@ -47,7 +56,12 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             tv_date = (TextView) itemView.findViewById(R.id.tv_date);
             tv_time = (TextView) itemView.findViewById(R.id.tv_time);
             tv_drink_volume = (TextView) itemView.findViewById(R.id.tv_drink_volume);
-            buttonDelete = (Button) itemView.findViewById(R.id.delete);
+            buttonDelete = (Button) itemView.findViewById(R.id.bt_delete);
+            buttonEdit = (Button) itemView.findViewById(R.id.bt_edit);
+            iv_edit = (ImageView) itemView.findViewById(R.id.iv_edit);
+            iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
+
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,6 +79,9 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     private DateFormat dateFormat;
     private double caffeineConsumedToday;
 
+    private SharedPreferences settings;
+    private String units;
+
     //protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
 
     public RecyclerViewAdapter(Context context, ArrayList<HashMap<String, String>> objects) {
@@ -75,6 +92,14 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     @Override
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
+
+        // Restore preferences
+        if (this != null) {
+            settings = PreferenceManager.getDefaultSharedPreferences(mContext);
+        }
+        units = settings.getString("units_drinks_pref", "");
+
+
         return new SimpleViewHolder(view);
     }
 
@@ -86,7 +111,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
-                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.iv_delete));
             }
         });
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
@@ -95,7 +120,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
         });
-        viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+        viewHolder.iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mItemManger.removeShownLayouts(viewHolder.swipeLayout);
@@ -118,12 +143,30 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 Toast.makeText(view.getContext(), "Deleted " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
         });
+        viewHolder.iv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String keyValue = viewHolder.tv_keyId.getText().toString();
+                Intent theIntent = new Intent(mContext, EditRecord.class);
+                theIntent.putExtra("keyId", keyValue);
+                Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                mContext.startActivity(theIntent);
+
+                //arcProgress.setProgress((int) Calculations.round(caffeineConsumedToday, 0));
+                Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+            }
+        });
         viewHolder.tv_keyId.setText(recordMap.get(CommonConstants.KEY_ID));
         viewHolder.tv_caffeine_mass.setText(recordMap.get(CommonConstants.CAFFEINE_MASS)+"mg from ");
         viewHolder.tv_product.setText(recordMap.get(CommonConstants.PRODUCT));
         viewHolder.tv_date.setText(Util.convertDateFromDB(recordMap.get(CommonConstants.DATE_CREATED)));
         viewHolder.tv_time.setText(Util.convertTimeFromDB(recordMap.get(CommonConstants.TIME_STARTED)));
-        viewHolder.tv_drink_volume.setText(" - "+recordMap.get(CommonConstants.DRINK_VOLUME)+"fl.oz.");
+
+        if (units.equals("fl oz")) viewHolder.tv_drink_volume.setText(" - "+recordMap.get(CommonConstants.DRINK_VOLUME)+" fl.oz.");
+        else viewHolder.tv_drink_volume.setText(" - "+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.DRINK_VOLUME)) / 0.033814), 1)+" ml");
+
+
+
         mItemManger.bindView(viewHolder.itemView, position);
     }
 

@@ -34,10 +34,10 @@
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
             android:layout_above="@+id/linearLayout"
-            android:layout_toRightOf="@+id/tv_total"
-            android:layout_toEndOf="@+id/tv_total">
+            android:layout_marginBottom="22dp"
+            android:layout_toEndOf="@+id/tv_total"
+            android:layout_toRightOf="@+id/tv_total">
 
             <TextView
                 android:id="@+id/tv_mg"
@@ -56,11 +56,11 @@
 
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_total"
-            android:weightSum="4"
-            android:id="@+id/linearLayout">
+            android:weightSum="4">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -78,15 +78,15 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="EFFECTS LAST UNTIL"
-                        android:textSize="10sp"/>
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/tv_effects_desc_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="8pm"
-                        android:gravity="center_horizontal"/>
+                        android:gravity="center_horizontal"
+                        android:text="8pm" />
                 </TableLayout>
 
             </LinearLayout>
@@ -100,7 +100,7 @@
                 <ImageView
                     android:id="@+id/iv_rate_indicator"
                     android:layout_width="20dp"
-                    android:layout_height="20dp"/>
+                    android:layout_height="20dp" />
 
                 <TextView
                     android:id="@+id/tv_rate_num"
@@ -150,11 +150,28 @@
 
     </RelativeLayout>
 
-    <!-- A RecyclerView with some commonly used attributes -->
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recycler_view"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent">
+
+        <!-- A RecyclerView with some commonly used attributes -->
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_action_new"
+            fab:fab_colorNormal="@color/primary"
+            fab:fab_colorPressed="@color/white"
+            fab:fab_colorRipple="#fcc" />
+    </FrameLayout>
 
 </LinearLayout>

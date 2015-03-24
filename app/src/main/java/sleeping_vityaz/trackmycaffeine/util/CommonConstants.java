@@ -7,6 +7,7 @@ public class CommonConstants {
 
     // Table Names
     public static final String HISTORY_TABLE = "history_table";
+    public static final String CUSTOM_TABLE = "custom_table";
 
     // Common column names
     public static final String KEY_ID = "col_id";

@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import com.daimajia.swipe.util.Attributes;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,6 +37,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
+import sleeping_vityaz.trackmycaffeine.AddNewCustomCaffeineActivity;
 import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.MyApplication;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
@@ -58,6 +60,8 @@ public class TrackerFragment extends Fragment {
             tv_effects_desc_text, tv_effects_desc_time,
             tv_rate_num, tv_rate_units,
             tv_left_num, tv_left_desc_text;
+
+    FloatingActionButton fab;
 
     private ImageView iv_rate_indicator;
 
@@ -155,6 +159,7 @@ public class TrackerFragment extends Fragment {
             tv_left_desc_text.setText(" above");
         }
 
+
         Timer timer = new Timer();
         MyTimerTask timerTask = new MyTimerTask();
         timer.schedule(timerTask, 0, 1000);
@@ -178,6 +183,15 @@ public class TrackerFragment extends Fragment {
 
         /* Listeners */
         recyclerView.setOnScrollListener(onScrollListener);
+
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), AddNewCaffeineFragment.class));
+            }
+        });
+        fab.attachToRecyclerView(recyclerView);
     }
 
     /**

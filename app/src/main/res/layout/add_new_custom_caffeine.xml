@@ -26,28 +26,6 @@
         android:layout_marginTop="@dimen/app_margin"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tv_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Custom Item"
-                android:textSize="14sp" />
-
-
-            <CheckBox
-                android:id="@+id/cb_custom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:checked="false"/>
-
-        </LinearLayout>
-
-
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -56,97 +34,35 @@
                 android:id="@+id/tv_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="Item"
                 android:textSize="14sp" />
 
-
-            <sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView
-                android:id="@+id/ac_product_autocomplete"
+            <EditText
+                android:id="@+id/et_item"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:textColor="@color/primary_text"
-                android:textColorHint="@color/primary_text"
-                android:visibility="visible"></sleeping_vityaz.trackmycaffeine.databases.CustomAutoCompleteView>
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner"
-                android:padding="@dimen/content_padding"
-                android:layout_margin="@dimen/component_margin"
-                android:visibility="gone"
-                android:spinnerMode="dialog" />
+                android:textColorHint="@color/primary_text"/>
 
         </TableLayout>
 
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/component_margin">
-
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Date"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/et_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:onClick="onClick" />
-
-
-            </TableLayout>
-
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/tv_start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Start time"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/et_start"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:onClick="onClick" />
-            </TableLayout>
-
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_duration"
+                android:id="@+id/tv_mass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Duration (in minutes)"
-                android:textSize="14sp" />
+                android:text="Caffeine content (mg)"
+                android:textSize="15sp" />
 
             <EditText
-                android:id="@+id/et_duration"
+                android:id="@+id/et_mass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -154,11 +70,9 @@
                 android:clickable="true"
                 android:ems="4"
                 android:inputType="numberDecimal"
-                android:maxLength="2"
-                android:onClick="onClick"
-                android:text="0" />
+                android:maxLength="6"
+                android:onClick="onClick" />
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -169,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="How much did you drink?"
+                android:text="Drink Volume"
                 android:textSize="15sp" />
 
             <EditText
@@ -205,25 +119,6 @@
                 android:layout_marginLeft="@dimen/content_margin"
                 android:text="mL" />
         </RadioGroup>
-
-        <TextView
-            android:id="@+id/tv_caffeine_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp40_margin"
-            android:text="Caffeine content"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_caffeine_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="0"
-            android:textSize="50sp" />
-
-        <!-- add numberpad/edittext for volume consumed -->
 
 
     </LinearLayout>

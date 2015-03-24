@@ -205,27 +205,53 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
                 HashMap<String, String> recordMap = dbAdapter.getRecordInfo(tv_item.getText().toString());
                 dbAdapter.close();
 
-                if (null == recordMap.get(CommonConstants.C_DENSITY_CAFFEINE)) alert("It's null");
+                if (!recordMap.isEmpty()) {
 
-                String toDB_volume = "";
-                if (rb_floz.isChecked()) {
-                    toDB_volume = et_volume.getText().toString();
-                } else if (rb_ml.isChecked()) {
-                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    if (null == recordMap.get(CommonConstants.C_DENSITY_CAFFEINE))
+                        alert("It's null");
+
+                    String toDB_volume = "";
+                    if (rb_floz.isChecked()) {
+                        toDB_volume = et_volume.getText().toString();
+                    } else if (rb_ml.isChecked()) {
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    }
+                    // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
+                    HashMap<String, String> queryValuesMap = new HashMap<String, String>();
+                    queryValuesMap.put(CommonConstants.KEY_ID, keyId);
+                    queryValuesMap.put(CommonConstants.PRODUCT, tv_item.getText().toString());
+                    queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
+                    queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
+                    queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
+                    queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
+                    queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
+
+                    alert(queryValuesMap.toString());
+
+                    dbTools.updateRecord(queryValuesMap);
+                }else{ // must be a custom item
+                    recordMap = dbTools.getCustomRecordInfo(tv_item.getText().toString());
+
+                    String toDB_volume = "";
+                    if (rb_floz.isChecked()) {
+                        toDB_volume = et_volume.getText().toString();
+                    } else if (rb_ml.isChecked()) {
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    }
+                    // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
+                    HashMap<String, String> queryValuesMap = new HashMap<String, String>();
+                    queryValuesMap.put(CommonConstants.KEY_ID, keyId);
+                    queryValuesMap.put(CommonConstants.PRODUCT, tv_item.getText().toString());
+                    queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
+                    queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
+                    queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
+                    queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
+                    queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
+
+                    alert(queryValuesMap.toString());
+
+                    dbTools.updateRecord(queryValuesMap);
                 }
-                // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
-                HashMap<String, String> queryValuesMap = new HashMap<String, String>();
-                queryValuesMap.put(CommonConstants.KEY_ID, keyId);
-                queryValuesMap.put(CommonConstants.PRODUCT, tv_item.getText().toString());
-                queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
-                queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
-                queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
-                queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
-                queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
-
-                alert(queryValuesMap.toString());
-
-                dbTools.updateRecord(queryValuesMap);
 
                 startActivity(intent);
                 finish();
@@ -256,6 +282,21 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
                 toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
             }
             tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
+        } else { // must be custom product
+            recordMap = dbTools.getCustomRecordInfo(product);
+            if (!recordMap.isEmpty() && !et_volume.getText().toString().equals("")) {
+                // setting caffeine num
+                if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null) {
+                    String toDB_volume = "";
+                    if (rb_floz.isChecked()) {
+                        toDB_volume = et_volume.getText().toString();
+                    } else if (rb_ml.isChecked()) {
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    }
+                    tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
+                }
+            }
+
         }
     }
 

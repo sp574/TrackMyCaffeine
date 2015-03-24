@@ -25,6 +25,10 @@
         <activity android:name=".fragments.AddNewCaffeineFragment" android:label="Add Entry" android:theme="@style/Theme.AppCompat.Light.AddNewCaffeineFragment" android:parentActivityName = ".MainActivity"/>
         <activity android:name=".EditRecord" android:label="Edit Record" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:parentActivityName = ".MainActivity"/>
+        <activity android:name=".AddNewCustomCaffeineActivity" android:label="Add Custom Item" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName = ".MainActivity"/>
+        <activity android:name=".EditCustomRecord" android:label="Edit Record" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName = ".MainActivity"/>
         <activity android:name=".Settings" android:label="Settings" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:parentActivityName = ".MainActivity"/>
     </application>

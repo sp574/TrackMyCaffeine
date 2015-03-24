@@ -13,12 +13,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.android.datetimepicker.date.DatePickerDialog;
@@ -32,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Calendar;
 
@@ -67,6 +73,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     // just to add some initial value
     String[] item = new String[]{"Please search..."};
 
+    private TextView tv_custom;
     private TextView tv_item;
     private TextView tv_date;
     private TextView tv_start;
@@ -80,6 +87,8 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     private RadioButton rb_floz;
     private RadioButton rb_ml;
     private RadioGroup rg_units;
+    private CheckBox cb_custom;
+    private Spinner spinner;
 
     private SharedPreferences settings;
     private String units;
@@ -87,6 +96,10 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     private Calendar calendar;
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
+
+    DBTools dbTools = null;
+
+    private String custom_product = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +157,87 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
             }
         });
 
+        cb_custom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (cb_custom.isChecked()) {
+                    spinner.setVisibility(View.VISIBLE);
+                    myAutoComplete.setVisibility(View.GONE);
+                } else {
+                    spinner.setVisibility(View.GONE);
+                    myAutoComplete.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        // Loading spinner data from database
+        loadSpinnerData();
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // On selecting a spinner item
+                custom_product = parent.getItemAtPosition(position).toString();
+                // Showing selected spinner item
+                Toast.makeText(parent.getContext(), "You selected: " + custom_product,
+                        Toast.LENGTH_LONG).show();
+
+                HashMap<String, String> recordMap = dbTools.getCustomRecordInfo(custom_product);
+
+                if (!recordMap.isEmpty()) {
+
+                    if (units.equals("fl oz")) {
+                        et_volume.setText(recordMap.get(CommonConstants.C_VOLUME_DRINK));
+                        //rb_floz.setChecked(true);
+                    } else {
+                        et_volume.setText("" + Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK)) / 0.033814), 1));
+                        //rb_ml.setChecked(true);
+                    }
+                    // setting caffeine num
+                    if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null) {
+                        String toDB_volume = "";
+                        if (rb_floz.isChecked()) {
+                            toDB_volume = et_volume.getText().toString();
+                        } else if (rb_ml.isChecked()) {
+                            toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        }
+                        tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    private void loadSpinnerData() {
+        // database handler
+        dbTools = DBTools.getInstance(this.getApplicationContext());
+
+        // Spinner Drop down elements
+        ArrayList<HashMap<String, String>> items = dbTools.getAllCustomRecords();
+        List<String> labels = new ArrayList<String>();
+        for (int i = 0; i < items.size(); i++) {
+            labels.add(items.get(i).get(CommonConstants.C_PRODUCT));
+        }
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, labels);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
     }
 
     TextWatcher watch = new TextWatcher() {
@@ -193,7 +287,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         dbAdapter.close();
 
         alert(recordMap.toString());
-        if (!recordMap.isEmpty() && !et_volume.getText().toString().equals("")) {
+        if (!recordMap.isEmpty() && !et_volume.getText().toString().equals("") && !cb_custom.isChecked()) {
             // setting caffeine num
             if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null) {
                 String toDB_volume = "";
@@ -204,7 +298,23 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 }
                 tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
             }
+        } else if (!custom_product.equals("") && cb_custom.isChecked()) {
+            recordMap = dbTools.getCustomRecordInfo(custom_product);
+            if (!recordMap.isEmpty() && !et_volume.getText().toString().equals("")) {
+                // setting caffeine num
+                if (recordMap.get(CommonConstants.C_DENSITY_CAFFEINE) != null) {
+                    String toDB_volume = "";
+                    if (rb_floz.isChecked()) {
+                        toDB_volume = et_volume.getText().toString();
+                    } else if (rb_ml.isChecked()) {
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    }
+                    tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
+                }
+            }
+
         }
+        alert(tv_caffeine_num.getText().toString());
     }
 
     private void getVolumeInfoAndSetFields(String product) {
@@ -218,7 +328,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 et_volume.setText(recordMap.get(CommonConstants.C_VOLUME_DRINK));
                 //rb_floz.setChecked(true);
             } else {
-                et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK)) / 0.033814), 1));
+                et_volume.setText("" + Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK)) / 0.033814), 1));
                 //rb_ml.setChecked(true);
             }
             // setting caffeine num
@@ -256,6 +366,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     }
 
     private void findViewsById() {
+        tv_custom = (TextView) findViewById(R.id.tv_checkbox);
         tv_item = (TextView) findViewById(R.id.tv_item);
         tv_date = (TextView) findViewById(R.id.tv_date);
         tv_start = (TextView) findViewById(R.id.tv_start);
@@ -270,6 +381,9 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         rg_units = (RadioGroup) findViewById(R.id.rg_units);
         rb_floz = (RadioButton) findViewById(R.id.ounces);
         rb_ml = (RadioButton) findViewById(R.id.ml);
+        cb_custom = (CheckBox) findViewById(R.id.cb_custom);
+        spinner = (Spinner) findViewById(R.id.spinner);
+
     }
 
     @Override
@@ -314,7 +428,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
             alert(et_date.getText().toString());
             if (et_date.getText().toString() != ""
                     && !et_start.getText().toString().equals("")
-                    && !myAutoComplete.getText().toString().equals("")
+                    && (!myAutoComplete.getText().toString().equals("") || (!custom_product.equals("") && cb_custom.isChecked()))
                     && !et_volume.getText().toString().equals("")
                     ) {
                 final DBTools dbTools = DBTools.getInstance(this);
@@ -322,28 +436,52 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                dbAdapter.open();
-                HashMap<String, String> recordMap = dbAdapter.getRecordInfo(myAutoComplete.getText().toString());
-                dbAdapter.close();
+                if (!cb_custom.isChecked()) {
 
-                String toDB_volume = "";
-                if (rb_floz.isChecked()) {
-                    toDB_volume = et_volume.getText().toString();
-                } else if (rb_ml.isChecked()) {
-                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    dbAdapter.open();
+                    HashMap<String, String> recordMap = dbAdapter.getRecordInfo(myAutoComplete.getText().toString());
+                    dbAdapter.close();
+
+                    String toDB_volume = "";
+                    if (rb_floz.isChecked()) {
+                        toDB_volume = et_volume.getText().toString();
+                    } else if (rb_ml.isChecked()) {
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    }
+                    // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
+                    HashMap<String, String> queryValuesMap = new HashMap<String, String>();
+                    queryValuesMap.put(CommonConstants.PRODUCT, myAutoComplete.getText().toString());
+                    queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
+                    queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
+                    queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
+                    queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
+                    queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
+
+                    alert(queryValuesMap.toString());
+
+                    dbTools.insertRecord(queryValuesMap);
+                }else{
+                    HashMap<String, String> recordMap = dbTools.getCustomRecordInfo(spinner.getSelectedItem().toString());
+
+                    String toDB_volume = "";
+                    if (rb_floz.isChecked()) {
+                        toDB_volume = et_volume.getText().toString();
+                    } else if (rb_ml.isChecked()) {
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    }
+                    // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
+                    HashMap<String, String> queryValuesMap = new HashMap<String, String>();
+                    queryValuesMap.put(CommonConstants.PRODUCT, spinner.getSelectedItem().toString());
+                    queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
+                    queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
+                    queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
+                    queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
+                    queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
+
+                    alert(queryValuesMap.toString());
+
+                    dbTools.insertRecord(queryValuesMap);
                 }
-                // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
-                HashMap<String, String> queryValuesMap = new HashMap<String, String>();
-                queryValuesMap.put(CommonConstants.PRODUCT, myAutoComplete.getText().toString());
-                queryValuesMap.put(CommonConstants.DRINK_VOLUME, toDB_volume); //get from spinner
-                queryValuesMap.put(CommonConstants.CAFFEINE_MASS, Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume));  // get from product_db once spinner is known
-                queryValuesMap.put(CommonConstants.DATE_CREATED, Util.convertDateForDB(et_date.getText().toString()));//changeDateFormat(dateFormatter.format(et_date.getText().toString())));
-                queryValuesMap.put(CommonConstants.TIME_STARTED, Util.convertTimeForDB(et_start.getText().toString()));
-                queryValuesMap.put(CommonConstants.DURATION, et_duration.getText().toString());
-
-                alert(queryValuesMap.toString());
-
-                dbTools.insertRecord(queryValuesMap);
 
                 startActivity(intent);
                 finish();

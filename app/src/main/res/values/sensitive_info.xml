@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Test banners -->
+    <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="test_interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+
+    <!-- Actual banners -->
+    <string name="banner_ad_unit_id">ca-app-pub-7302170195339135/4394737605</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-7302170195339135/6789800808</string>
+
+
+</resources>

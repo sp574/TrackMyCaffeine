@@ -14,6 +14,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.HashMap;
 
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
@@ -28,6 +32,8 @@ public class AddNewCustomCaffeineActivity extends ActionBarActivity {
 
     public static final String TAG = "ADD-NEW-CUSTOM-CAFFEINE";
 
+
+
     private TextView tv_item;
     private TextView tv_mass;
     private TextView tv_volume;
@@ -40,6 +46,7 @@ public class AddNewCustomCaffeineActivity extends ActionBarActivity {
 
     private SharedPreferences settings;
     private String units;
+
 
     DBTools dbTools = null;
 
@@ -60,6 +67,8 @@ public class AddNewCustomCaffeineActivity extends ActionBarActivity {
 
         findViewsById();
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

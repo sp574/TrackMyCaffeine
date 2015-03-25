@@ -7,23 +7,26 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.daimajia.swipe.util.Attributes;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.melnykov.fab.FloatingActionButton;
+
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import sleeping_vityaz.trackmycaffeine.AddNewCustomCaffeineActivity;
+import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.CustomRecyclerViewAdapter;
-import sleeping_vityaz.trackmycaffeine.adapters.RecyclerViewAdapter;
 import sleeping_vityaz.trackmycaffeine.adapters.util.DividerItemDecoration;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 
@@ -36,7 +39,7 @@ public class CustomItemsFragment extends Fragment{
     private RecyclerView.Adapter mAdapter;
     private ArrayList<HashMap<String, String>> mDataSet;
 
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
     DBTools dbTools = null;
 
@@ -51,10 +54,20 @@ public class CustomItemsFragment extends Fragment{
 
         recycleViewSetUp(rootView);
 
+        /* ADVERTISEMENTS */
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("690448A2D8552FB7AE0DF0DF97091914").build();
+        mAdView.loadAd(adRequest);
 
+        if (MainActivity.mInterstitialAd.isLoaded()) {
+            MainActivity.mInterstitialAd.show();
+        }
 
         return rootView;
     }
+
+
+
 
     private void recycleViewSetUp(View rootView) {
         // Layout Managers:
@@ -82,6 +95,7 @@ public class CustomItemsFragment extends Fragment{
         });
         fab.attachToRecyclerView(recyclerView);
     }
+
 
     /**
      * Substitute for our onScrollListener for RecyclerView

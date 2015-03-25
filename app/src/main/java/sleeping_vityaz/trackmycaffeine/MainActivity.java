@@ -19,9 +19,16 @@ import sleeping_vityaz.trackmycaffeine.fragments.PastRecordsFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.StoreFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.TrackerFragment;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+
 
 public class MainActivity extends MaterialNavigationDrawer {
 
+
+    public static InterstitialAd mInterstitialAd;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -38,6 +45,31 @@ public class MainActivity extends MaterialNavigationDrawer {
         this.addBottomSection(newSection(getString(R.string.about), new AboutFragment()));
         // prevents the nav drawer from opening on application start
         disableLearningPattern();
+
+        /* ADVERTISEMENTS */
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.test_interstitial_ad_unit_id));
+        requestNewInterstitial();
+
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder() //TODO: remove & change ad_ID before publishing
+                .addTestDevice("690448A2D8552FB7AE0DF0DF97091914")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override

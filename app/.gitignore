@@ -1,3 +1,4 @@
 /build
 
 src/main/assets/coffee_db
+src/main/res/values/sensitive_info.xml

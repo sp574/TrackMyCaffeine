@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import com.daimajia.swipe.util.Attributes;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -37,8 +39,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.prefs.Preferences;
 
-import sleeping_vityaz.trackmycaffeine.AddNewCustomCaffeineActivity;
-import sleeping_vityaz.trackmycaffeine.MainActivity;
 import sleeping_vityaz.trackmycaffeine.MyApplication;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
 import sleeping_vityaz.trackmycaffeine.R;
@@ -61,7 +61,7 @@ public class TrackerFragment extends Fragment {
             tv_rate_num, tv_rate_units,
             tv_left_num, tv_left_desc_text;
 
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
     private ImageView iv_rate_indicator;
 
@@ -163,6 +163,11 @@ public class TrackerFragment extends Fragment {
         Timer timer = new Timer();
         MyTimerTask timerTask = new MyTimerTask();
         timer.schedule(timerTask, 0, 1000);
+
+        /* ADVERTISEMENTS */
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("690448A2D8552FB7AE0DF0DF97091914").build();
+        mAdView.loadAd(adRequest);
 
         return rootView;
     }

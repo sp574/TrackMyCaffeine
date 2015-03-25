@@ -8,13 +8,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.daimajia.swipe.util.Attributes;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
+import sleeping_vityaz.trackmycaffeine.MyApplication;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.RecyclerViewAdapter;
 import sleeping_vityaz.trackmycaffeine.adapters.util.DividerItemDecoration;
@@ -31,9 +36,15 @@ public class PastRecordsFragment extends Fragment{
 
     DBTools dbTools = null;
 
+    private AdView mAdView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_past_records, container, false);
+
+        if (MyApplication.adsDisabled==false) {
+            setupBannerAd(rootView);
+        }
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_all);
 
@@ -42,6 +53,19 @@ public class PastRecordsFragment extends Fragment{
         recyclyViewSetUp(rootView);
 
         return rootView;
+    }
+
+    private void setupBannerAd(View rootView) {
+        LinearLayout lin_layout = (LinearLayout) rootView.findViewById(R.id.lin_layout);
+
+        // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
+        mAdView = new AdView(rootView.getContext());
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        lin_layout.addView(mAdView);
+        mAdView.loadAd(adRequest);
     }
 
     private void recyclyViewSetUp(View rootView) {

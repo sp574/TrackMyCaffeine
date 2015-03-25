@@ -25,6 +25,7 @@ import java.util.HashMap;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import sleeping_vityaz.trackmycaffeine.AddNewCustomCaffeineActivity;
 import sleeping_vityaz.trackmycaffeine.MainActivity;
+import sleeping_vityaz.trackmycaffeine.MyApplication;
 import sleeping_vityaz.trackmycaffeine.R;
 import sleeping_vityaz.trackmycaffeine.adapters.CustomRecyclerViewAdapter;
 import sleeping_vityaz.trackmycaffeine.adapters.util.DividerItemDecoration;
@@ -56,10 +57,10 @@ public class CustomItemsFragment extends Fragment{
 
         /* ADVERTISEMENTS */
         AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("690448A2D8552FB7AE0DF0DF97091914").build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
         mAdView.loadAd(adRequest);
 
-        if (MainActivity.mInterstitialAd.isLoaded()) {
+        if (MainActivity.mInterstitialAd.isLoaded() && MyApplication.adsDisabled==false) {
             MainActivity.mInterstitialAd.show();
         }
 

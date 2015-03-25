@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Test Hash for ad banners -->
+    <string name="virtual_dev_hash">690448A2D8552FB7AE0DF0DF97091914</string>
+    <string name="htc_one_hash">6756C17A7DE1271F24D39C9FBE3E0EB6</string>
+    <string name="hash">6756C17A7DE1271F24D39C9FBE3E0EB6</string>
+
+    <!-- SKU Product IDs -->
+    <string name="SKU_test_purchased">android.test.purchased</string>
+    <string name="SKU_test_refunded">android.test.refunded</string>
+    <string name="SKU_test_item_unavailable">android.test.item_unavailable</string>
+    <string name="SKU_test_cancelled">android.test.cancelled</string>
+    <string name="SKU_ad_removal">android.test.purchased</string>
+
     <!-- Test banners -->
     <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="test_interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
@@ -8,6 +20,9 @@
     <!-- Actual banners -->
     <string name="banner_ad_unit_id">ca-app-pub-7302170195339135/4394737605</string>
     <string name="interstitial_ad_unit_id">ca-app-pub-7302170195339135/6789800808</string>
+
+    <!-- IAP: base64EncodedPublicKey -->
+    <string name="base64EncodedPublicKey">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArwy3kmlaseIQEjfbIY2+5fTDNL1VmQesby6DAz9+MMzoMNOnW1o2HvS9d+l3yboDZ/iYnCGXKV4FG6z8eIQ4FNSnT2bD4dbhzhOk81p3ycEUyNeJ2Ad4Tol10yUFyZYwMdtZY5ICk96P6O4xw6S6D3wL8O1bKmQlqCt2Aasid4CFC/1IhlpjDudAoyweHi7WwVshw2lejL+85F0Sy/l79BPDV0AEifsekIkKx9woSJD/DgOODOIDRPtjWtzqYTM0BEN+0ECEkV0ORJ2cKqWb1wmHhSo0XWH6VZFXqf+A12CP8pTyvbxvFTCbsdg6Qo0G4ahicY2JSotX/EwujvwUNwIDAQAB</string>
 
 
 </resources>

@@ -166,7 +166,7 @@ public class TrackerFragment extends Fragment {
 
         /* ADVERTISEMENTS */
         AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("690448A2D8552FB7AE0DF0DF97091914").build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
         mAdView.loadAd(adRequest);
 
         return rootView;

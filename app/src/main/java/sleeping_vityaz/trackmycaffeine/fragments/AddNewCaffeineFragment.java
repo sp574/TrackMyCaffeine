@@ -1,5 +1,6 @@
 package sleeping_vityaz.trackmycaffeine.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -545,4 +546,5 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     public void onDialogNumberSet(int reference, int number, double decimal, boolean isNegative, double fullNumber) {
         et_volume.setText("" + fullNumber);
     }
+
 }

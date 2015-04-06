@@ -336,8 +336,8 @@ public class TrackerFragment extends Fragment {
         if (effectsBy!=0) {
             tv_effects_desc_time.setText(Util.convertTimeForDisplay(effectsBy));
         }else{
-            tv_effects_desc_text.setText("Get some caffeine");
-            tv_effects_desc_time.setText("in you");
+            tv_effects_desc_text.setText("NO CAFFEINE");
+            tv_effects_desc_time.setText("");
         }
         if (prevConcentration < concentration){ // rising rate
             iv_rate_indicator.setVisibility(View.VISIBLE);

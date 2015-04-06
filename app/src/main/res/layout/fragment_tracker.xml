@@ -7,169 +7,172 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tv_total"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/relative_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="102"
-            android:textSize="90sp" />
-
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/linearLayout"
-            android:layout_marginBottom="22dp"
-            android:layout_toEndOf="@+id/tv_total"
-            android:layout_toRightOf="@+id/tv_total">
+            android:layout_weight="1">
 
             <TextView
-                android:id="@+id/tv_mg"
+                android:id="@+id/tv_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="mg"
-                android:textSize="20sp" />
+                android:layout_centerHorizontal="true"
+                android:text="102"
+                android:textSize="90sp" />
 
-            <TextView
-                android:id="@+id/tv_today"
+            <TableLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TODAY"
-                android:textSize="20sp" />
-        </TableLayout>
+                android:layout_above="@+id/linearLayout"
+                android:layout_marginBottom="22dp"
+                android:layout_toEndOf="@+id/tv_total"
+                android:layout_toRightOf="@+id/tv_total">
 
+                <TextView
+                    android:id="@+id/tv_mg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="mg"
+                    android:textSize="20sp" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_total"
-            android:weightSum="4">
+                <TextView
+                    android:id="@+id/tv_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TODAY"
+                    android:textSize="20sp" />
+            </TableLayout>
+
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/linearLayout"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/content_margin"
-                android:layout_weight="2">
+                android:layout_below="@+id/tv_total"
+                android:weightSum="4">
 
-                <TableLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/content_margin"
+                    android:layout_weight="2">
+
+                    <TableLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_effects_desc_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="EFFECTS LAST UNTIL"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tv_effects_desc_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center_horizontal"
+                            android:text="8pm" />
+                    </TableLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/content_margin"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/iv_rate_indicator"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
 
                     <TextView
-                        android:id="@+id/tv_effects_desc_text"
+                        android:id="@+id/tv_rate_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="EFFECTS LAST UNTIL"
-                        android:textSize="10sp" />
+                        android:text="5" />
 
                     <TextView
-                        android:id="@+id/tv_effects_desc_time"
+                        android:id="@+id/tv_rate_units"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center_horizontal"
-                        android:text="8pm" />
-                </TableLayout>
+                        android:text="mg" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/content_margin"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tv_left_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="298" />
+
+                    <TextView
+                        android:id="@+id/tv_left_units"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="mg" />
+
+                    <TextView
+                        android:id="@+id/tv_left_desc_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text=" left" />
+                </LinearLayout>
+
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/content_margin"
-                android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/iv_rate_indicator"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_rate_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="5" />
-
-                <TextView
-                    android:id="@+id/tv_rate_units"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="mg" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/content_margin"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/tv_left_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="298" />
-
-                <TextView
-                    android:id="@+id/tv_left_units"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="mg" />
-
-                <TextView
-                    android:id="@+id/tv_left_desc_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text=" left" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-
-        <!-- A RecyclerView with some commonly used attributes -->
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/recycler_view"
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:layout_below="@id/relative_layout"
+            android:layout_weight="1">
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_action_new"
-            fab:fab_colorNormal="@color/primary"
-            fab:fab_colorPressed="@color/white"
-            fab:fab_colorRipple="#fcc" />
+            <!-- A RecyclerView with some commonly used attributes -->
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
 
-    </FrameLayout>
-    </FrameLayout>
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_action_new"
+                fab:fab_colorNormal="@color/primary"
+                fab:fab_colorPressed="@color/white"
+                fab:fab_colorRipple="#fcc" />
+
+        </FrameLayout>
+    </RelativeLayout>
     <!--<com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"

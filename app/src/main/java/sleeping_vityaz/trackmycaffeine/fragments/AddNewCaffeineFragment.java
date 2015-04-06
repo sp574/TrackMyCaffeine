@@ -120,6 +120,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.primary));
 
         findViewsById();
 

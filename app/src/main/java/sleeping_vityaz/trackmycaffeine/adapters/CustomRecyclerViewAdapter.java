@@ -42,9 +42,8 @@ public class CustomRecyclerViewAdapter extends RecyclerSwipeAdapter<CustomRecycl
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         SwipeLayout swipeLayout;
-        TextView tv_keyId, tv_caffeine_mass, tv_product, tv_date, tv_time, tv_drink_volume;
+        TextView tv_keyId, tv_caffeine_mass, tv_product, tv_drink_volume;
         ImageView iv_edit, iv_delete;
-        Button buttonDelete, buttonEdit;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
@@ -53,8 +52,6 @@ public class CustomRecyclerViewAdapter extends RecyclerSwipeAdapter<CustomRecycl
             tv_caffeine_mass = (TextView) itemView.findViewById(R.id.tv_caffeine_mass);
             tv_product = (TextView) itemView.findViewById(R.id.tv_product);
             tv_drink_volume = (TextView) itemView.findViewById(R.id.tv_drink_volume);
-            buttonDelete = (Button) itemView.findViewById(R.id.bt_delete);
-            buttonEdit = (Button) itemView.findViewById(R.id.bt_edit);
             iv_edit = (ImageView) itemView.findViewById(R.id.iv_edit);
             iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 

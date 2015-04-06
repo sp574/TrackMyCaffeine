@@ -12,7 +12,7 @@
         <LinearLayout
             android:layout_width="160dp"
             android:layout_height="80dp"
-            android:background="#FF5534"
+            android:background="@color/primary_light"
             android:gravity="center"
             android:tag="Bottom3"
             android:weightSum="2">
@@ -24,22 +24,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_launcher" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="Delete Item?"
-                android:textColor="#fff"
-                android:textSize="17sp" />
 
-            <Button
-                android:id="@+id/bt_edit"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0"
-                android:background="#ffffff"
-                android:text="Yes,Delete"
-                android:textColor="#FF5534" />
 
             <ImageView
                 android:id="@+id/iv_delete"
@@ -48,22 +33,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_action_discard" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="Delete Item?"
-                android:textColor="#fff"
-                android:textSize="17sp" />
 
-            <Button
-                android:id="@+id/bt_delete"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0"
-                android:background="#ffffff"
-                android:text="Yes,Delete"
-                android:textColor="#FF5534" />
         </LinearLayout>
 
         <LinearLayout
@@ -82,9 +52,9 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/content_padding"
                 android:paddingLeft="@dimen/content_margin"
-                android:paddingTop="@dimen/content_padding"
-                android:paddingBottom="@dimen/content_padding">
+                android:paddingTop="@dimen/content_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -94,14 +64,28 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/tv_product"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Coffee(Brewed)"
-                            android:textColor="#444444"
-                            android:textStyle="bold"
-                            android:textSize="18sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/tv_product"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Coffee(Brewed)"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="3 hours ago"
+                                android:gravity="right"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -112,8 +96,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="60mg from"
-                                android:textColor="#444444"
-                                android:textSize="14sp" />
+                                android:textColor="@color/secondary_text"
+                                android:textSize="12sp" />
 
 
                             <TextView
@@ -121,8 +105,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" 12oz."
-                                android:textColor="#444444"
-                                android:textSize="14sp" />
+                                android:textColor="@color/secondary_text"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="right"
+                                android:text="date"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="12sp" />
 
                         </LinearLayout>
 
@@ -131,29 +124,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/tv_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="3 hours ago"
-                        android:textColor="#444444"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/tv_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="date"
-                        android:textColor="#444444"
-                        android:textSize="12sp" />
-
-
-                </LinearLayout>
 
             </TableLayout>
 

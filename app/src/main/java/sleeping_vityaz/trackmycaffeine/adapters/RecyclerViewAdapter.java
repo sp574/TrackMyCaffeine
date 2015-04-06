@@ -43,7 +43,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         SwipeLayout swipeLayout;
         TextView tv_keyId, tv_caffeine_mass, tv_product, tv_date, tv_time, tv_drink_volume;
         ImageView iv_edit, iv_delete;
-        Button buttonDelete, buttonEdit;
 
 
 
@@ -56,8 +55,6 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             tv_date = (TextView) itemView.findViewById(R.id.tv_date);
             tv_time = (TextView) itemView.findViewById(R.id.tv_time);
             tv_drink_volume = (TextView) itemView.findViewById(R.id.tv_drink_volume);
-            buttonDelete = (Button) itemView.findViewById(R.id.bt_delete);
-            buttonEdit = (Button) itemView.findViewById(R.id.bt_edit);
             iv_edit = (ImageView) itemView.findViewById(R.id.iv_edit);
             iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 

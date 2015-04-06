@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="102"
+                android:textColor="@color/primary_text"
                 android:textSize="90sp" />
 
             <TableLayout
@@ -40,6 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="mg"
+                    android:textColor="@color/secondary_text"
                     android:textSize="20sp" />
 
                 <TextView
@@ -47,6 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TODAY"
+                    android:textColor="@color/secondary_text"
                     android:textSize="20sp" />
             </TableLayout>
 
@@ -74,6 +77,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="EFFECTS LAST UNTIL"
+                            android:textColor="@color/secondary_text"
                             android:textSize="10sp" />
 
                         <TextView
@@ -82,7 +86,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center_horizontal"
-                            android:text="8pm" />
+                            android:text="8pm"
+                            android:textColor="@color/secondary_text" />
                     </TableLayout>
 
                 </LinearLayout>
@@ -103,14 +108,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="5" />
+                        android:text="5"
+                        android:textColor="@color/secondary_text" />
 
                     <TextView
                         android:id="@+id/tv_rate_units"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="mg" />
+                        android:text="mg"
+                        android:textColor="@color/secondary_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -123,25 +130,34 @@
                         android:id="@+id/tv_left_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="298" />
+                        android:text="298"
+                        android:textColor="@color/secondary_text" />
 
                     <TextView
                         android:id="@+id/tv_left_units"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="mg" />
+                        android:text="mg"
+                        android:textColor="@color/secondary_text" />
 
                     <TextView
                         android:id="@+id/tv_left_desc_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text=" left" />
+                        android:text=" left"
+                        android:textColor="@color/secondary_text" />
                 </LinearLayout>
 
 
             </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/linearLayout"
+                android:background="@color/primary_light"/>
 
 
         </RelativeLayout>
@@ -173,15 +189,6 @@
 
         </FrameLayout>
     </RelativeLayout>
-    <!--<com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal|bottom"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/test_banner_ad_unit_id"></com.google.android.gms.ads.AdView>-->
 
 
 </LinearLayout>

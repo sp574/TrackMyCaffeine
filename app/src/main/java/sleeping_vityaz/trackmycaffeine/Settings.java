@@ -30,6 +30,7 @@ public class Settings extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.primary));
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction().replace(R.id.content_frame,

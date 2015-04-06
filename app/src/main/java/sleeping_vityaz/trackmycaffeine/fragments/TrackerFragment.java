@@ -340,12 +340,18 @@ public class TrackerFragment extends Fragment {
             tv_effects_desc_time.setText("");
         }
         if (prevConcentration < concentration){ // rising rate
-            iv_rate_indicator.setVisibility(View.VISIBLE);
+            if (iv_rate_indicator.getVisibility()==View.INVISIBLE) {
+                iv_rate_indicator.setVisibility(View.VISIBLE);
+            }
             if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.up_arrow));
         }else if (prevConcentration==concentration){ // stable
-            iv_rate_indicator.setVisibility(View.INVISIBLE);
+            if (iv_rate_indicator.getVisibility()==View.VISIBLE) {
+                iv_rate_indicator.setVisibility(View.INVISIBLE);
+            }
         }else{ // falling rate
-            iv_rate_indicator.setVisibility(View.VISIBLE);
+            if (iv_rate_indicator.getVisibility()==View.INVISIBLE) {
+                iv_rate_indicator.setVisibility(View.VISIBLE);
+            }
             if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.down_arrow));
         }
         int left_num = (int) Calculations.round((Integer.parseInt(threshold)-caffeineConsumedToday), 0);

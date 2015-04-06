@@ -30,14 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.AddNewCaffeineFragment" android:label="Add Entry" android:theme="@style/Theme.AppCompat.Light.AddNewCaffeineFragment" android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".EditRecord" android:label="Edit Record" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        <activity android:name=".fragments.AddNewCaffeineFragment" android:label="Add Entry" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar" android:parentActivityName = ".MainActivity"/>
+        <activity android:name=".EditRecord" android:label="Edit Record" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".AddNewCustomCaffeineActivity" android:label="Add Custom Item" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        <activity android:name=".AddNewCustomCaffeineActivity" android:label="Add Custom Item" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".EditCustomRecord" android:label="Edit Custom Record" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        <activity android:name=".EditCustomRecord" android:label="Edit Custom Record" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".Settings" android:label="Settings" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        <activity android:name=".Settings" android:label="Settings" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
         <!--Include the AdActivity configChanges and theme. -->
         <activity android:name="com.google.android.gms.ads.AdActivity"

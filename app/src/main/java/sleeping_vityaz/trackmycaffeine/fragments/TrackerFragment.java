@@ -19,12 +19,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import com.daimajia.swipe.util.Attributes;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.melnykov.fab.FloatingActionButton;
 
@@ -89,6 +91,8 @@ public class TrackerFragment extends Fragment {
     private int LOW_ID = 0;
     private int ABOVE_ID = 1;
     private boolean showNotification = true;
+
+    private AdView mAdView;
 
 
     DBTools dbTools = null;
@@ -164,12 +168,24 @@ public class TrackerFragment extends Fragment {
         MyTimerTask timerTask = new MyTimerTask();
         timer.schedule(timerTask, 0, 1000);
 
-        /* ADVERTISEMENTS */
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
-        mAdView.loadAd(adRequest);
+        if (MyApplication.adsDisabled==false) {
+            setupBannerAd(rootView);
+        }
 
         return rootView;
+    }
+
+    private void setupBannerAd(View rootView) {
+        LinearLayout lin_layout = (LinearLayout) rootView.findViewById(R.id.lin_layout);
+
+        // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
+        mAdView = new AdView(rootView.getContext());
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        lin_layout.addView(mAdView);
+        mAdView.loadAd(adRequest);
     }
 
     private void recyclyViewSetUp(View rootView) {

@@ -40,7 +40,7 @@ public class MainActivity extends MaterialNavigationDrawer {
     @Override
     public void init(Bundle savedInstanceState) {
 
-        initialiseBilling();
+        //initialiseBilling();
 
         // create sections
         this.addSection(newSection(getString(R.string.tracker), new TrackerFragment()));

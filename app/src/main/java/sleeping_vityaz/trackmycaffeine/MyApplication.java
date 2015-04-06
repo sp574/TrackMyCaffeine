@@ -7,7 +7,7 @@ import android.app.Application;
  */
 public class MyApplication extends Application {
 
-    public static boolean adsDisabled = false;
+    public static boolean adsDisabled = true;
 
     public static boolean isActivityVisible() {
         return activityVisible;

@@ -9,10 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.daimajia.swipe.util.Attributes;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.melnykov.fab.FloatingActionButton;
@@ -42,6 +44,8 @@ public class CustomItemsFragment extends Fragment{
 
     private FloatingActionButton fab;
 
+    private AdView mAdView;
+
     DBTools dbTools = null;
 
     @Override
@@ -55,16 +59,37 @@ public class CustomItemsFragment extends Fragment{
 
         recycleViewSetUp(rootView);
 
+        if (MyApplication.adsDisabled==false) {
+            setupBannerAd(rootView);
+        }
+
         /* ADVERTISEMENTS */
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
+        /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
         mAdView.loadAd(adRequest);
 
         if (MainActivity.mInterstitialAd.isLoaded() && MyApplication.adsDisabled==false) {
             MainActivity.mInterstitialAd.show();
-        }
+        }*/
 
         return rootView;
+    }
+
+    private void setupBannerAd(View rootView) {
+        LinearLayout lin_layout = (LinearLayout) rootView.findViewById(R.id.lin_layout);
+
+        // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
+        mAdView = new AdView(rootView.getContext());
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        lin_layout.addView(mAdView);
+        mAdView.loadAd(adRequest);
+
+        if (MainActivity.mInterstitialAd.isLoaded() && MyApplication.adsDisabled==false) {
+            MainActivity.mInterstitialAd.show();
+        }
     }
 
 

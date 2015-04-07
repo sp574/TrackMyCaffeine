@@ -23,8 +23,6 @@ public class DBTools extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
 
-
-
     public DBTools(Context applicationContext) {
         super(applicationContext, CommonConstants.DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -76,15 +74,15 @@ public class DBTools extends SQLiteOpenHelper {
     // Table Create Statement
     public String createTable(String TABLE) {
 
-        String create="";
+        String create = "";
         if (TABLE.equals(CommonConstants.HISTORY_TABLE)) {
             create = "CREATE TABLE "
                     + TABLE + " ( " + CommonConstants.KEY_ID + " INTEGER PRIMARY KEY, " + CommonConstants.PRODUCT
                     + " TEXT, " + CommonConstants.DRINK_VOLUME + " REAL, " + CommonConstants.CAFFEINE_MASS + " REAL, " + CommonConstants.DATE_CREATED + " INTEGER, " + CommonConstants.TIME_STARTED + " INTEGER, " + CommonConstants.DURATION + " INTEGER" + " )";
-        }else if (TABLE.equals(CommonConstants.CUSTOM_TABLE)){
+        } else if (TABLE.equals(CommonConstants.CUSTOM_TABLE)) {
             create = "CREATE TABLE "
                     + TABLE + " ( " + CommonConstants.C_POSITION + " INTEGER PRIMARY KEY, " + CommonConstants.C_PRODUCT
-                    + " TEXT, " + CommonConstants.C_VOLUME_DRINK + " REAL, " + CommonConstants.C_MASS_CAFFEINE + " REAL, "  + CommonConstants.C_DENSITY_CAFFEINE + " REAL" + " )";
+                    + " TEXT, " + CommonConstants.C_VOLUME_DRINK + " REAL, " + CommonConstants.C_MASS_CAFFEINE + " REAL, " + CommonConstants.C_DENSITY_CAFFEINE + " REAL" + " )";
         }
         return create;
     }
@@ -126,7 +124,7 @@ public class DBTools extends SQLiteOpenHelper {
 
     }
 
-    public int updateRecord(HashMap<String, String> queryValues){
+    public int updateRecord(HashMap<String, String> queryValues) {
 
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -141,12 +139,12 @@ public class DBTools extends SQLiteOpenHelper {
 
 
         return database.update(CommonConstants.HISTORY_TABLE, values,
-                CommonConstants.KEY_ID + " = ?", new String[] {queryValues.get(CommonConstants.KEY_ID) });
+                CommonConstants.KEY_ID + " = ?", new String[]{queryValues.get(CommonConstants.KEY_ID)});
 
 
     }
 
-    public int updateCustomRecord(HashMap<String, String> queryValues){
+    public int updateCustomRecord(HashMap<String, String> queryValues) {
 
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -159,7 +157,7 @@ public class DBTools extends SQLiteOpenHelper {
 
 
         return database.update(CommonConstants.CUSTOM_TABLE, values,
-                CommonConstants.C_POSITION + " = ?", new String[] {queryValues.get(CommonConstants.C_POSITION) });
+                CommonConstants.C_POSITION + " = ?", new String[]{queryValues.get(CommonConstants.C_POSITION)});
 
 
     }
@@ -217,20 +215,23 @@ public class DBTools extends SQLiteOpenHelper {
 
             } while (cursor.moveToNext());
         }
+        if (cursor != null) {
+            cursor.close();
+        }
         return recordArrayList;
     }
 
-    public HashMap<String, String> getRecordInfo(String id){
+    public HashMap<String, String> getRecordInfo(String id) {
 
         HashMap<String, String> recordMap = new HashMap<String, String>();
         SQLiteDatabase database = this.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM "+CommonConstants.HISTORY_TABLE+" WHERE "+CommonConstants.KEY_ID+" = '" + id + "'";
+        String selectQuery = "SELECT * FROM " + CommonConstants.HISTORY_TABLE + " WHERE " + CommonConstants.KEY_ID + " = '" + id + "'";
 
         Cursor cursor = database.rawQuery(selectQuery, null);
 
-        if(cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 recordMap.put(CommonConstants.KEY_ID, cursor.getString(cursor.getColumnIndex(CommonConstants.KEY_ID)));
                 recordMap.put(CommonConstants.PRODUCT, cursor.getString(cursor.getColumnIndex(CommonConstants.PRODUCT)));
                 recordMap.put(CommonConstants.DRINK_VOLUME, cursor.getString(cursor.getColumnIndex(CommonConstants.DRINK_VOLUME)));
@@ -239,12 +240,13 @@ public class DBTools extends SQLiteOpenHelper {
                 recordMap.put(CommonConstants.TIME_STARTED, cursor.getString(cursor.getColumnIndex(CommonConstants.TIME_STARTED)));
                 recordMap.put(CommonConstants.DURATION, cursor.getString(cursor.getColumnIndex(CommonConstants.DURATION)));
 
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
         }
         return recordMap;
     }
-
-
 
 
     public ArrayList<HashMap<String, String>> getAllRecordsOnThisDate(String date, String prevDate) {
@@ -253,7 +255,7 @@ public class DBTools extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + CommonConstants.HISTORY_TABLE + " WHERE " + CommonConstants.DATE_CREATED + " = '" + date + "' OR "
-                                                                                          + CommonConstants.DATE_CREATED + " = '" + prevDate + "'";
+                + CommonConstants.DATE_CREATED + " = '" + prevDate + "'";
 
         Cursor cursor = database.rawQuery(selectQuery, null);
 
@@ -273,6 +275,9 @@ public class DBTools extends SQLiteOpenHelper {
                 recordArrayList.add(recordMap);
 
             } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
         }
         return recordArrayList;
     }
@@ -300,38 +305,41 @@ public class DBTools extends SQLiteOpenHelper {
 
             } while (cursor.moveToNext());
         }
+        if (cursor != null) {
+            cursor.close();
+        }
         return recordArrayList;
     }
 
-    public HashMap<String, String> getCustomRecordInfo(String product){
+    public HashMap<String, String> getCustomRecordInfo(String product) {
 
         HashMap<String, String> recordMap = new HashMap<String, String>();
         SQLiteDatabase database = this.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM "+CommonConstants.CUSTOM_TABLE+" WHERE "+CommonConstants.C_PRODUCT+" = ?";
+        String selectQuery = "SELECT * FROM " + CommonConstants.CUSTOM_TABLE + " WHERE " + CommonConstants.C_PRODUCT + " = ?";
 
-        Cursor cursor = database.rawQuery(selectQuery, new String[] {""+product+""});
+        Cursor cursor = database.rawQuery(selectQuery, new String[]{"" + product + ""});
 
-        if(cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 recordMap.put(CommonConstants.C_POSITION, cursor.getString(cursor.getColumnIndex(CommonConstants.C_POSITION)));
                 recordMap.put(CommonConstants.C_PRODUCT, cursor.getString(cursor.getColumnIndex(CommonConstants.C_PRODUCT)));
                 recordMap.put(CommonConstants.C_VOLUME_DRINK, cursor.getString(cursor.getColumnIndex(CommonConstants.C_VOLUME_DRINK)));
                 recordMap.put(CommonConstants.C_MASS_CAFFEINE, cursor.getString(cursor.getColumnIndex(CommonConstants.C_MASS_CAFFEINE)));
                 recordMap.put(CommonConstants.C_DENSITY_CAFFEINE, cursor.getString(cursor.getColumnIndex(CommonConstants.C_DENSITY_CAFFEINE)));
 
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
         }
         return recordMap;
     }
 
 
-
     private void alert(String s) {
         Log.d(TAG, s);
     }
-
-
 
 
 }

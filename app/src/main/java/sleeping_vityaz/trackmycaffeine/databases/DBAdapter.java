@@ -103,6 +103,9 @@ public class DBAdapter
 
             }while(cursor.moveToNext());
         }
+        if (cursor != null) {
+            cursor.close();
+        }
         return recordMap;
     }
 

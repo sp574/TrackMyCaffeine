@@ -29,8 +29,8 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_action_new"
             fab:fab_colorNormal="@color/primary"
-            fab:fab_colorPressed="@color/white"
-            fab:fab_colorRipple="#fcc" />
+            fab:fab_colorPressed="@color/primary_dark"
+            fab:fab_colorRipple="@color/accent" />
     </FrameLayout>
 
     <!--<com.google.android.gms.ads.AdView

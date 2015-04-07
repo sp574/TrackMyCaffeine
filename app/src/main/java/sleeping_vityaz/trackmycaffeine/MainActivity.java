@@ -39,16 +39,16 @@ public class MainActivity extends MaterialNavigationDrawer {
         initialiseBilling();
 
         // create sections
-        this.addSection(newSection(getString(R.string.tracker), new TrackerFragment()));
-        this.addSection(newSection(getString(R.string.custom_items), new CustomItemsFragment()));
+        this.addSection(newSection(getString(R.string.tracker), R.drawable.ic_tracker, new TrackerFragment()));
+        this.addSection(newSection(getString(R.string.custom_items), R.drawable.ic_custom, new CustomItemsFragment()));
         //this.addSection(newSection(getString(R.string.graph), new GraphFragment()));
-        this.addSection(newSection(getString(R.string.past_records), new PastRecordsFragment()));
+        this.addSection(newSection(getString(R.string.past_records), R.drawable.ic_past, new PastRecordsFragment()));
         //this.addSection(newSection(getString(R.string.my_stats), new MyStatsFragment()));
-        this.addSection(newSection(getString(R.string.store), new StoreFragment()));
-        this.addSection(newSection(getString(R.string.settings), R.drawable.ic_settings_black_24dp, new Intent(this, Settings.class)));
+        this.addSection(newSection(getString(R.string.store), R.drawable.ic_store, new StoreFragment()));
+        this.addSection(newSection(getString(R.string.settings), R.drawable.ic_settings, new Intent(this, Settings.class)));
 
         // create bottom section
-        this.addBottomSection(newSection(getString(R.string.about), new AboutFragment()));
+        this.addBottomSection(newSection(getString(R.string.about), R.drawable.ic_action_about, new AboutFragment()));
         // prevents the nav drawer from opening on application start
         disableLearningPattern();
 

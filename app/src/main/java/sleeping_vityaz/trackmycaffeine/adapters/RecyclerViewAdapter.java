@@ -109,6 +109,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             @Override
             public void onOpen(SwipeLayout layout) {
                 YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.iv_delete));
+                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.iv_edit));
             }
         });
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
@@ -154,7 +155,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             }
         });
         viewHolder.tv_keyId.setText(recordMap.get(CommonConstants.KEY_ID));
-        viewHolder.tv_caffeine_mass.setText(recordMap.get(CommonConstants.CAFFEINE_MASS)+"mg from ");
+        viewHolder.tv_caffeine_mass.setText(recordMap.get(CommonConstants.CAFFEINE_MASS)+"mg ");
         viewHolder.tv_product.setText(recordMap.get(CommonConstants.PRODUCT));
         viewHolder.tv_date.setText(Util.convertDateFromDB(recordMap.get(CommonConstants.DATE_CREATED)));
         viewHolder.tv_time.setText(Util.convertTimeFromDB(recordMap.get(CommonConstants.TIME_STARTED)));

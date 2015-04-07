@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.doomonafireball.betterpickers.numberpicker.NumberPickerBuilder;
@@ -256,6 +257,8 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
 
                 startActivity(intent);
                 finish();
+            }else{
+                Toast.makeText(this, "You must fill out all fields", Toast.LENGTH_LONG).show();
             }
             return true;
         }
@@ -325,11 +328,6 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
                     timePickerDialog.show(getSupportFragmentManager(), FRAG_TAG_TIME_PICKER);
                 }
                 break;
-            case R.id.et_volume:
-                NumberPickerBuilder npb = new NumberPickerBuilder()
-                        .setFragmentManager(getSupportFragmentManager())
-                        .setStyleResId(R.style.BetterPickersDialogFragment_Light);
-                npb.show();
         }
     }
 

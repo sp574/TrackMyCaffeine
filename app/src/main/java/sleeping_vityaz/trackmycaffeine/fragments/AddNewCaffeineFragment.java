@@ -487,6 +487,8 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
 
                 startActivity(intent);
                 finish();
+            }else{
+                Toast.makeText(this, "You must fill out all fields", Toast.LENGTH_LONG).show();
             }
             return true;
         }
@@ -522,11 +524,6 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                     timePickerDialog.show(getSupportFragmentManager(), FRAG_TAG_TIME_PICKER);
                 }
                 break;
-            case R.id.et_volume:
-                NumberPickerBuilder npb = new NumberPickerBuilder()
-                        .setFragmentManager(getSupportFragmentManager())
-                        .setStyleResId(R.style.BetterPickersDialogFragment_Light);
-                npb.show();
         }
     }
 

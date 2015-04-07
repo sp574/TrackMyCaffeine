@@ -24,20 +24,21 @@
             android:value="@integer/google_play_services_version" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoHeaderLight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.AddNewCaffeineFragment" android:label="Add Entry" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar" android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".EditRecord" android:label="Edit Record" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
+        <activity android:name=".fragments.AddNewCaffeineFragment" android:label="Add Entry" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar" android:parentActivityName = ".MainActivity"/>
+        <activity android:name=".EditRecord" android:label="Edit Record" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".AddNewCustomCaffeineActivity" android:label="Add Custom Item" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
+        <activity android:name=".AddNewCustomCaffeineActivity" android:screenOrientation="portrait" android:label="Add Custom Item" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".EditCustomRecord" android:label="Edit Custom Record" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
+        <activity android:name=".EditCustomRecord" android:label="Edit Custom Record" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
-        <activity android:name=".Settings" android:label="Settings" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
+        <activity android:name=".Settings" android:label="Settings" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.CustomNoActioBar"
             android:parentActivityName = ".MainActivity"/>
         <!--Include the AdActivity configChanges and theme. -->
         <activity android:name="com.google.android.gms.ads.AdActivity"

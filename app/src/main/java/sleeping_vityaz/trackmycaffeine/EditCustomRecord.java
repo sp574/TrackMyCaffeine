@@ -4,16 +4,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.datetimepicker.date.DatePickerDialog;
+import com.doomonafireball.betterpickers.numberpicker.NumberPickerBuilder;
+import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
+
+import org.joda.time.DateTime;
+
+import java.util.Calendar;
 import java.util.HashMap;
 
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
@@ -119,6 +129,8 @@ public class EditCustomRecord extends ActionBarActivity {
 
                 startActivity(intent);
                 finish();
+            }else{
+                Toast.makeText(this, "You must fill out all fields", Toast.LENGTH_LONG).show();
             }
             return true;
         }
@@ -207,6 +219,7 @@ public class EditCustomRecord extends ActionBarActivity {
             }
         }
     }
+
 
 
 }

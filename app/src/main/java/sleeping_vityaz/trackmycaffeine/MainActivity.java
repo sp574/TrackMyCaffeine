@@ -1,8 +1,6 @@
 package sleeping_vityaz.trackmycaffeine;
 
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,12 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 import sleeping_vityaz.trackmycaffeine.fragments.AboutFragment;
-import sleeping_vityaz.trackmycaffeine.fragments.AddNewCaffeineFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.CustomItemsFragment;
-import sleeping_vityaz.trackmycaffeine.fragments.GraphFragment;
-import sleeping_vityaz.trackmycaffeine.fragments.MyStatsFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.PastRecordsFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.StoreFragment;
 import sleeping_vityaz.trackmycaffeine.fragments.TrackerFragment;
@@ -26,7 +23,6 @@ import sleeping_vityaz.trackmycaffeine.util.Purchase;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
 
@@ -40,14 +36,14 @@ public class MainActivity extends MaterialNavigationDrawer {
     @Override
     public void init(Bundle savedInstanceState) {
 
-        //initialiseBilling();
+        initialiseBilling();
 
         // create sections
         this.addSection(newSection(getString(R.string.tracker), new TrackerFragment()));
         this.addSection(newSection(getString(R.string.custom_items), new CustomItemsFragment()));
-        this.addSection(newSection(getString(R.string.graph), new GraphFragment()));
+        //this.addSection(newSection(getString(R.string.graph), new GraphFragment()));
         this.addSection(newSection(getString(R.string.past_records), new PastRecordsFragment()));
-        this.addSection(newSection(getString(R.string.my_stats), new MyStatsFragment()));
+        //this.addSection(newSection(getString(R.string.my_stats), new MyStatsFragment()));
         this.addSection(newSection(getString(R.string.store), new StoreFragment()));
         this.addSection(newSection(getString(R.string.settings), R.drawable.ic_settings_black_24dp, new Intent(this, Settings.class)));
 
@@ -56,7 +52,26 @@ public class MainActivity extends MaterialNavigationDrawer {
         // prevents the nav drawer from opening on application start
         disableLearningPattern();
 
+        AppRate.with(this)
+                .setInstallDays(3) // default 10, 0 means install day.
+                .setLaunchTimes(7) // default 10
+                .setRemindInterval(3) // default 1
+                .setShowNeutralButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+                    }
+                })
+                .monitor();
+
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
         setupInterstitialAds();
+
+
 
     }
 

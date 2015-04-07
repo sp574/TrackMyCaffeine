@@ -8,10 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 import sleeping_vityaz.trackmycaffeine.MyApplication;
@@ -30,6 +32,7 @@ public class StoreFragment extends Fragment {
 
     private ButtonRectangle bt_remove_ads;
     IabHelper mHelper;
+    private AdView mAdView;
 
     @Nullable
     @Override
@@ -40,7 +43,9 @@ public class StoreFragment extends Fragment {
 
         findViewsById(rootView);
 
-        setupAds(rootView);
+        if (MyApplication.adsDisabled==false) {
+            setupAds(rootView);
+        }
 
         buttonClicked(rootView);
 
@@ -60,7 +65,7 @@ public class StoreFragment extends Fragment {
         bt_remove_ads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHelper.launchPurchaseFlow(getActivity(), getResources().getString(R.string.SKU_test_refunded), 10001,
+                mHelper.launchPurchaseFlow(getActivity(), getResources().getString(R.string.SKU_test_purchased), 10001,
                         mPurchaseFinishedListener, "mypurchasetoken1");
             }
         });
@@ -94,7 +99,7 @@ public class StoreFragment extends Fragment {
                 Log.d(TAG, "PurchaseFinishedListener: Error");
                 return;
             }
-            else if (purchase.getSku().equals(getResources().getString(R.string.SKU_test_refunded))) {
+            else if (purchase.getSku().equals(getResources().getString(R.string.SKU_test_purchased))) {
                 Log.d(TAG, "OnIabPurchaseFinishedListener: disabling button");
                 bt_remove_ads.setEnabled(false);
                 consumeItem();
@@ -117,7 +122,7 @@ public class StoreFragment extends Fragment {
                 // Handle failure
                 Log.d(TAG, "QueryInventoryFinishedListener: Error");
             } else {
-                mHelper.consumeAsync(inventory.getPurchase(getResources().getString(R.string.SKU_test_refunded)),
+                mHelper.consumeAsync(inventory.getPurchase(getResources().getString(R.string.SKU_test_purchased)),
                         mConsumeFinishedListener);
             }
         }
@@ -152,8 +157,18 @@ public class StoreFragment extends Fragment {
 
     private void setupAds(View rootView){
         /* ADVERTISEMENTS */
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
+       /* AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        mAdView.loadAd(adRequest);*/
+        LinearLayout lin_layout = (LinearLayout) rootView.findViewById(R.id.lin_layout);
+
+        // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
+        mAdView = new AdView(rootView.getContext());
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        lin_layout.addView(mAdView);
         mAdView.loadAd(adRequest);
     }
 

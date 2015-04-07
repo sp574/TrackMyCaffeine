@@ -11,7 +11,8 @@
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        >
 
         <RelativeLayout
             android:id="@+id/relative_layout"
@@ -19,57 +20,76 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/tv_total"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/rl_header"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="102"
-                android:textColor="@color/primary_text"
-                android:textSize="90sp" />
+                android:gravity="center_horizontal"
+                android:layout_centerHorizontal="true">
 
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/linearLayout"
-                android:layout_marginBottom="22dp"
-                android:layout_toEndOf="@+id/tv_total"
-                android:layout_toRightOf="@+id/tv_total">
 
                 <TextView
-                    android:id="@+id/tv_mg"
+                    android:id="@+id/tv_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="mg"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="20sp" />
+                    android:text="102"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textColor="@color/primary_text"
+                    android:textSize="90sp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="@dimen/component_margin" />
 
-                <TextView
-                    android:id="@+id/tv_today"
+                <TableLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TODAY"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="20sp" />
-            </TableLayout>
+                    android:layout_toRightOf="@+id/tv_total"
+                    android:layout_toEndOf="@+id/tv_total"
+                    android:gravity="bottom|right"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignBottom="@+id/tv_total"
+                    android:layout_marginBottom="20dp">
+
+                    <TextView
+                        android:id="@+id/tv_mg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="mg"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tv_today"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TODAY"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="20sp"
+                        android:singleLine="true" />
+                </TableLayout>
+
+            </RelativeLayout>
 
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_total"
+                android:layout_below="@+id/rl_header"
                 android:weightSum="4">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/content_margin"
-                    android:layout_weight="2">
+                    android:layout_margin="@dimen/component_margin"
+                    android:layout_weight="1">
 
                     <TableLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center">
 
                         <TextView
                             android:id="@+id/tv_effects_desc_text"
@@ -78,30 +98,36 @@
                             android:layout_gravity="center"
                             android:text="EFFECTS LAST UNTIL"
                             android:textColor="@color/secondary_text"
-                            android:textSize="10sp" />
+                            android:textSize="12sp"
+                            android:textAlignment="center"
+                            android:gravity="center" />
 
                         <TextView
                             android:id="@+id/tv_effects_desc_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:gravity="center_horizontal"
+                            android:gravity="center"
                             android:text="8pm"
-                            android:textColor="@color/secondary_text" />
+                            android:textSize="12sp"
+                            android:textColor="@color/secondary_text"
+                            android:textAlignment="center" />
                     </TableLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/content_margin"
-                    android:layout_weight="1">
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/component_margin"
+                    android:layout_weight="2">
 
                     <ImageView
                         android:id="@+id/iv_rate_indicator"
                         android:layout_width="20dp"
-                        android:layout_height="20dp" />
+                        android:layout_height="20dp"
+                        android:layout_marginRight="@dimen/small_margin"
+                        android:layout_gravity="center" />
 
                     <TextView
                         android:id="@+id/tv_rate_num"
@@ -122,16 +148,18 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/content_margin"
-                    android:layout_weight="1">
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/component_margin"
+                    android:layout_weight="1"
+                    android:textAlignment="center">
 
                     <TextView
                         android:id="@+id/tv_left_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="298"
-                        android:textColor="@color/secondary_text" />
+                        android:textColor="@color/secondary_text"
+                        android:layout_gravity="center" />
 
                     <TextView
                         android:id="@+id/tv_left_units"
@@ -157,7 +185,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="1dp"
                 android:layout_below="@id/linearLayout"
-                android:background="@color/primary_light"/>
+                android:background="@color/primary_light" />
 
 
         </RelativeLayout>

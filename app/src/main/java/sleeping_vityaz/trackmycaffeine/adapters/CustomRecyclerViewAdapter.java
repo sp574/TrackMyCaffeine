@@ -20,7 +20,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import sleeping_vityaz.trackmycaffeine.EditCustomRecord;
 import sleeping_vityaz.trackmycaffeine.EditRecord;
@@ -55,13 +54,13 @@ public class CustomRecyclerViewAdapter extends RecyclerSwipeAdapter<CustomRecycl
             iv_edit = (ImageView) itemView.findViewById(R.id.iv_edit);
             iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+           /* itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.d(getClass().getSimpleName(), "onItemSelected: " + tv_product.getText().toString());
                     Toast.makeText(view.getContext(), "onItemSelected: " + tv_product.getText().toString(), Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
         }
     }
 
@@ -102,12 +101,12 @@ public class CustomRecyclerViewAdapter extends RecyclerSwipeAdapter<CustomRecycl
                 YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.iv_edit));
             }
         });
-        viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
+        /*viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
             @Override
             public void onDoubleClick(SwipeLayout layout, boolean surface) {
                 Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
         viewHolder.iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,10 +127,8 @@ public class CustomRecyclerViewAdapter extends RecyclerSwipeAdapter<CustomRecycl
                 Intent theIntent = new Intent(mContext, EditCustomRecord.class);
                 theIntent.putExtra("product", keyValue);
                 theIntent.putExtra("keyId", viewHolder.tv_keyId.getText().toString());
-                Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
                 mContext.startActivity(theIntent);
-
-                Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
         });
         viewHolder.tv_keyId.setText(recordMap.get(CommonConstants.C_POSITION));

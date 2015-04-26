@@ -11,7 +11,7 @@
     <string name="SKU_test_refunded">android.test.refunded</string>
     <string name="SKU_test_item_unavailable">android.test.item_unavailable</string>
     <string name="SKU_test_cancelled">android.test.cancelled</string>
-    <string name="SKU_ad_removal">android.test.purchased</string>
+    <string name="SKU_ad_removal">android.ad.removal</string>
 
     <!-- Test banners -->
     <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>

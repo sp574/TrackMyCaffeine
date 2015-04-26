@@ -20,7 +20,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.github.lzyzsd.circleprogress.ArcProgress;
 
 import sleeping_vityaz.trackmycaffeine.EditRecord;
 import sleeping_vityaz.trackmycaffeine.databases.DBTools;
@@ -58,15 +57,13 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             iv_edit = (ImageView) itemView.findViewById(R.id.iv_edit);
             iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
 
-
-
-            itemView.setOnClickListener(new View.OnClickListener() {
+            /*itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d(getClass().getSimpleName(), "onItemSelected: " + tv_product.getText().toString());
-                    Toast.makeText(view.getContext(), "onItemSelected: " + tv_product.getText().toString(), Toast.LENGTH_SHORT).show();
+                    //Log.d(getClass().getSimpleName(), "onItemSelected: " + tv_product.getText().toString());
+                    //Toast.makeText(view.getContext(), "onItemSelected: " + tv_product.getText().toString(), Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
         }
     }
 
@@ -115,7 +112,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
             @Override
             public void onDoubleClick(SwipeLayout layout, boolean surface) {
-                Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
         });
         viewHolder.iv_delete.setOnClickListener(new View.OnClickListener() {
@@ -147,11 +144,8 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 String keyValue = viewHolder.tv_keyId.getText().toString();
                 Intent theIntent = new Intent(mContext, EditRecord.class);
                 theIntent.putExtra("keyId", keyValue);
-                Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
                 mContext.startActivity(theIntent);
-
-                //arcProgress.setProgress((int) Calculations.round(caffeineConsumedToday, 0));
-                Toast.makeText(view.getContext(), "Update " + viewHolder.tv_product.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
         });
         viewHolder.tv_keyId.setText(recordMap.get(CommonConstants.KEY_ID));
@@ -160,7 +154,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.tv_date.setText(Util.convertDateFromDB(recordMap.get(CommonConstants.DATE_CREATED)));
         viewHolder.tv_time.setText(Util.convertTimeFromDB(recordMap.get(CommonConstants.TIME_STARTED)));
 
-        if (units.equals("fl oz")) viewHolder.tv_drink_volume.setText(" - "+recordMap.get(CommonConstants.DRINK_VOLUME)+" fl.oz.");
+        if (units.equals("fl oz")) viewHolder.tv_drink_volume.setText(" - "+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.DRINK_VOLUME))),1)+" fl.oz.");
         else viewHolder.tv_drink_volume.setText(" - "+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.DRINK_VOLUME)) / 0.033814), 1)+" ml");
 
 

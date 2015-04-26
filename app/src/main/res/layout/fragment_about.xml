@@ -7,7 +7,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/app_margin">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,9 +60,12 @@
                 android:id="@+id/tv_license_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/content_padding"
+                android:layout_marginBottom="@dimen/app_margin"
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/message_license"
                 android:textColor="@color/secondary_text"
+                android:background="@color/primary_light"
                 android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>

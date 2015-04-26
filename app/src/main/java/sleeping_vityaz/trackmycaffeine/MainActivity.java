@@ -48,14 +48,14 @@ public class MainActivity extends MaterialNavigationDrawer {
         this.addSection(newSection(getString(R.string.settings), R.drawable.ic_settings, new Intent(this, Settings.class)));
 
         // create bottom section
-        this.addBottomSection(newSection(getString(R.string.about), R.drawable.ic_action_about, new AboutFragment()));
+        this.addBottomSection(newSection(getString(R.string.about), R.drawable.ic_about, new AboutFragment()));
         // prevents the nav drawer from opening on application start
         disableLearningPattern();
 
         AppRate.with(this)
-                .setInstallDays(3) // default 10, 0 means install day.
+                .setInstallDays(2) // default 10, 0 means install day.
                 .setLaunchTimes(7) // default 10
-                .setRemindInterval(3) // default 1
+                .setRemindInterval(2) // default 1
                 .setShowNeutralButton(true) // default true
                 .setDebug(false) // default false
                 .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
@@ -78,7 +78,7 @@ public class MainActivity extends MaterialNavigationDrawer {
     private void setupInterstitialAds(){
         /* ADVERTISEMENTS */
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getResources().getString(R.string.test_interstitial_ad_unit_id));
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
         requestNewInterstitial();
 
         if (mInterstitialAd.isLoaded()) {
@@ -94,10 +94,7 @@ public class MainActivity extends MaterialNavigationDrawer {
     }
 
     private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder() //TODO: remove & change ad_ID before publishing
-                .addTestDevice(getResources().getString(R.string.hash))
-                .build();
-
+        AdRequest adRequest = new AdRequest.Builder().build();
         mInterstitialAd.loadAd(adRequest);
     }
 
@@ -152,12 +149,12 @@ public class MainActivity extends MaterialNavigationDrawer {
                 // Do your checks here...
 
                 // Do we have the premium upgrade?
-                Purchase purchasePro = inventory.getPurchase(getResources().getString(R.string.SKU_test_purchased)); // Where G.SKU_PRO is your product ID (eg. permanent.ad_removal)
+                Purchase purchasePro = inventory.getPurchase(getResources().getString(R.string.SKU_ad_removal)); // Where G.SKU_PRO is your product ID (eg. permanent.ad_removal)
                 MyApplication.adsDisabled = (purchasePro != null);
-                Log.d("Main-Activity", "User is " + (MyApplication.adsDisabled ? "PREMIUM" : "NOT PREMIUM"));
+                //Log.d("Main-Activity", "User is " + (MyApplication.adsDisabled ? "PREMIUM" : "NOT PREMIUM"));
                 // After checking inventory, re-jig stuff which the user can access now
                 // that we've determined what they've purchased
-                Log.d("Main-Activity", "Initial inventory query finished; enabling main UI.");
+                //Log.d("Main-Activity", "Initial inventory query finished; enabling main UI.");
 
             }
         };

@@ -120,7 +120,7 @@ public class TrackerFragment extends Fragment {
         threshold = settings.getString("threshold_pref", "400");
         units = settings.getString("units_drinks_pref", "");
 
-        alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
+        //alert("NOTIFICATIONS: "+notifications+" UNITS: "+units);
 
         if (getActivity()!=null) {
            notificationManager = (NotificationManager) getActivity().getSystemService(mContext.NOTIFICATION_SERVICE);
@@ -142,6 +142,7 @@ public class TrackerFragment extends Fragment {
 
         prevConcentration = 0.0;
 
+        // only get records on this date and NOT from previous day!
         allRecordsOnThisDate = dbTools.getAllRecordsOnThisDate(Util.convertDateForDB(dateFormat.format(calendar.getTime())),
                 Util.convertDateForDB(dateFormat.format(calPrev.getTime())));
 
@@ -152,7 +153,7 @@ public class TrackerFragment extends Fragment {
         for (HashMap<String, String> hashMap : allRecordsOnThisDate){
             caffeineConsumedToday += Double.parseDouble(hashMap.get(CommonConstants.CAFFEINE_MASS));
         }
-        alert("Caffeine Consumed Today "+caffeineConsumedToday);
+        //alert("Caffeine Consumed Today "+caffeineConsumedToday);
         tv_total.setText("" + ((int) Calculations.round(caffeineConsumedToday, 0)));
         int left_num = (int) Calculations.round((Integer.parseInt(threshold)-caffeineConsumedToday), 0);
         if (left_num>=0){
@@ -166,7 +167,7 @@ public class TrackerFragment extends Fragment {
 
         Timer timer = new Timer();
         MyTimerTask timerTask = new MyTimerTask();
-        timer.schedule(timerTask, 0, 1000);
+        timer.schedule(timerTask, 500, 1000);
 
         if (MyApplication.adsDisabled==false) {
             setupBannerAd(rootView);
@@ -181,9 +182,9 @@ public class TrackerFragment extends Fragment {
         // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
         mAdView = new AdView(rootView.getContext());
         mAdView.setAdSize(AdSize.SMART_BANNER);
-        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+        mAdView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id));
 
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         lin_layout.addView(mAdView);
         mAdView.loadAd(adRequest);
     }
@@ -325,8 +326,8 @@ public class TrackerFragment extends Fragment {
                 effectsBy = 0;
             }
 
-            alert("effectsBy = "+effectsBy);
-            alert("time now = "+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis()));
+            //alert("effectsBy = "+effectsBy);
+            //alert("time now = "+Util.stripeDateReturnMilliseconds(calendar.getTimeInMillis()));
 
             concentration += Calculations.calcConcentration(caffeineToStart, start, duration, timeOfInterest);
 
@@ -343,16 +344,24 @@ public class TrackerFragment extends Fragment {
             if (iv_rate_indicator.getVisibility()==View.INVISIBLE) {
                 iv_rate_indicator.setVisibility(View.VISIBLE);
             }
-            if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.up_arrow));
-        }else if (prevConcentration==concentration){ // stable
-            if (iv_rate_indicator.getVisibility()==View.VISIBLE) {
-                iv_rate_indicator.setVisibility(View.INVISIBLE);
+            if (getActivity() != null) {
+                if (iv_rate_indicator.getDrawable() != getActivity().getResources().getDrawable(R.drawable.up_arrow)) {
+                    iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.up_arrow));
+                }
             }
-        }else{ // falling rate
-            if (iv_rate_indicator.getVisibility()==View.INVISIBLE) {
+        }/*else if (prevConcentration==concentration){ // stable
+            if (iv_rate_indicator.getVisibility()==View.VISIBLE) {
+                //iv_rate_indicator.setVisibility(View.INVISIBLE);
+            }
+        }*/else { // falling rate
+            if (iv_rate_indicator.getVisibility() == View.INVISIBLE) {
                 iv_rate_indicator.setVisibility(View.VISIBLE);
             }
-            if (getActivity()!=null) iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.down_arrow));
+            if (getActivity() != null) {
+                if (iv_rate_indicator.getDrawable() != getActivity().getResources().getDrawable(R.drawable.down_arrow)) {
+                    iv_rate_indicator.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.down_arrow));
+                }
+            }
         }
         int left_num = (int) Calculations.round((Integer.parseInt(threshold)-caffeineConsumedToday), 0);
         if (left_num>=0){

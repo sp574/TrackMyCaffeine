@@ -2,6 +2,8 @@ package sleeping_vityaz.trackmycaffeine;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -98,6 +100,10 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setBackgroundColor(getResources().getColor(R.color.primary));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         findViewsById();
 
@@ -196,6 +202,7 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
             alert(et_date.getText().toString());
             if (et_date.getText().toString() != ""
                     && !et_start.getText().toString().equals("")
+                    && !et_duration.getText().toString().equals("")
                     && !et_volume.getText().toString().equals("")
                     ) {
                 dbTools = DBTools.getInstance(this);
@@ -216,7 +223,7 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
                     if (rb_floz.isChecked()) {
                         toDB_volume = et_volume.getText().toString();
                     } else if (rb_ml.isChecked()) {
-                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                     }
                     // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                     HashMap<String, String> queryValuesMap = new HashMap<String, String>();
@@ -238,7 +245,7 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
                     if (rb_floz.isChecked()) {
                         toDB_volume = et_volume.getText().toString();
                     } else if (rb_ml.isChecked()) {
-                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                     }
                     // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                     HashMap<String, String> queryValuesMap = new HashMap<String, String>();
@@ -283,7 +290,7 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
             if (rb_floz.isChecked()) {
                 toDB_volume = et_volume.getText().toString();
             } else if (rb_ml.isChecked()) {
-                toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
             }
             tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
         } else { // must be custom product
@@ -295,7 +302,7 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
                     if (rb_floz.isChecked()) {
                         toDB_volume = et_volume.getText().toString();
                     } else if (rb_ml.isChecked()) {
-                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                     }
                     tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
                 }
@@ -333,15 +340,28 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-        calendar.set(year, monthOfYear, dayOfMonth);
-        update();
+        DateTime now = DateTime.now();
+
+        if (year<=now.getYear() && monthOfYear<now.getMonthOfYear() && dayOfMonth<=now.getDayOfMonth()) {
+            calendar.set(year, monthOfYear, dayOfMonth);
+            update();
+        }else{
+            Toast.makeText(this, "The date specified is in the future", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void onTimeSet(RadialTimePickerDialog radialTimePickerDialog, int hour_of_day, int minute) {
-        calendar.set(Calendar.HOUR_OF_DAY, hour_of_day);
-        calendar.set(Calendar.MINUTE, minute);
-        update();
+
+        DateTime now = DateTime.now();
+
+        if (hour_of_day<= now.getHourOfDay() && minute <= now.getMinuteOfHour()){
+            calendar.set(Calendar.HOUR_OF_DAY, hour_of_day);
+            calendar.set(Calendar.MINUTE, minute);
+            update();
+        }else{
+            Toast.makeText(this, "The time specified is in the future", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -367,7 +387,7 @@ public class EditRecord extends ActionBarActivity implements DatePickerDialog.On
             tv_caffeine_num.setText(recordMap.get(CommonConstants.CAFFEINE_MASS) + "mg");
 
             if (units.equals("fl oz")) {
-                et_volume.setText(recordMap.get(CommonConstants.DRINK_VOLUME));
+                et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.DRINK_VOLUME))),1));
                 rb_floz.setChecked(true);
             } else {
                 et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.DRINK_VOLUME)) / 0.033814), 1));

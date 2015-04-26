@@ -254,8 +254,8 @@ public class DBTools extends SQLiteOpenHelper {
         ArrayList<HashMap<String, String>> recordArrayList = new ArrayList<HashMap<String, String>>();
         SQLiteDatabase database = this.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM " + CommonConstants.HISTORY_TABLE + " WHERE " + CommonConstants.DATE_CREATED + " = '" + date + "' OR "
-                + CommonConstants.DATE_CREATED + " = '" + prevDate + "'";
+        String selectQuery = "SELECT * FROM " + CommonConstants.HISTORY_TABLE + " WHERE " + CommonConstants.DATE_CREATED + " = '" + date + "'";
+                //+ " OR " + CommonConstants.DATE_CREATED + " = '" + prevDate + "'";
 
         Cursor cursor = database.rawQuery(selectQuery, null);
 

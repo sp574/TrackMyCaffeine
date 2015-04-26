@@ -63,15 +63,6 @@ public class CustomItemsFragment extends Fragment{
             setupBannerAd(rootView);
         }
 
-        /* ADVERTISEMENTS */
-        /*AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
-        mAdView.loadAd(adRequest);
-
-        if (MainActivity.mInterstitialAd.isLoaded() && MyApplication.adsDisabled==false) {
-            MainActivity.mInterstitialAd.show();
-        }*/
-
         return rootView;
     }
 
@@ -81,9 +72,9 @@ public class CustomItemsFragment extends Fragment{
         // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
         mAdView = new AdView(rootView.getContext());
         mAdView.setAdSize(AdSize.SMART_BANNER);
-        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+        mAdView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id));
 
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         lin_layout.addView(mAdView);
         mAdView.loadAd(adRequest);
 

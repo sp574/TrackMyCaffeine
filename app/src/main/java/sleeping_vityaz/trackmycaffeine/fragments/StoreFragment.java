@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
@@ -65,8 +66,12 @@ public class StoreFragment extends Fragment {
         bt_remove_ads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHelper.launchPurchaseFlow(getActivity(), getResources().getString(R.string.SKU_test_purchased), 10001,
-                        mPurchaseFinishedListener, "mypurchasetoken1");
+                try {
+                    mHelper.launchPurchaseFlow(getActivity(), getResources().getString(R.string.SKU_ad_removal), 10001,
+                            mPurchaseFinishedListener, "mypurchasetoken1");
+                }catch (IllegalStateException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
@@ -99,7 +104,7 @@ public class StoreFragment extends Fragment {
                 Log.d(TAG, "PurchaseFinishedListener: Error");
                 return;
             }
-            else if (purchase.getSku().equals(getResources().getString(R.string.SKU_test_purchased))) {
+            else if (purchase.getSku().equals(getResources().getString(R.string.SKU_ad_removal))) {
                 Log.d(TAG, "OnIabPurchaseFinishedListener: disabling button");
                 bt_remove_ads.setEnabled(false);
                 consumeItem();
@@ -122,7 +127,7 @@ public class StoreFragment extends Fragment {
                 // Handle failure
                 Log.d(TAG, "QueryInventoryFinishedListener: Error");
             } else {
-                mHelper.consumeAsync(inventory.getPurchase(getResources().getString(R.string.SKU_test_purchased)),
+                mHelper.consumeAsync(inventory.getPurchase(getResources().getString(R.string.SKU_ad_removal)),
                         mConsumeFinishedListener);
             }
         }
@@ -135,6 +140,7 @@ public class StoreFragment extends Fragment {
 
                     if (result.isSuccess()) {
                         MyApplication.adsDisabled = true;
+                        Toast.makeText(getActivity(), "Please restart the app now to remove ads", Toast.LENGTH_LONG).show();
                     } else {
                         // handle error
                         Log.d(TAG, "OnConsumeFinishedListener: Error");
@@ -157,17 +163,15 @@ public class StoreFragment extends Fragment {
 
     private void setupAds(View rootView){
         /* ADVERTISEMENTS */
-       /* AdView mAdView = (AdView) rootView.findViewById(R.id.adView); //TODO: remove & change ad_ID before publishing
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
-        mAdView.loadAd(adRequest);*/
+
         LinearLayout lin_layout = (LinearLayout) rootView.findViewById(R.id.lin_layout);
 
         // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
         mAdView = new AdView(rootView.getContext());
         mAdView.setAdSize(AdSize.SMART_BANNER);
-        mAdView.setAdUnitId(getResources().getString(R.string.test_banner_ad_unit_id));
+        mAdView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id));
 
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(getResources().getString(R.string.hash)).build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         lin_layout.addView(mAdView);
         mAdView.loadAd(adRequest);
     }

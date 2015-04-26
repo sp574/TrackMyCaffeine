@@ -3,6 +3,8 @@ package sleeping_vityaz.trackmycaffeine.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -33,6 +36,9 @@ import com.android.datetimepicker.time.TimePickerDialog;
 import com.doomonafireball.betterpickers.numberpicker.NumberPickerBuilder;
 import com.doomonafireball.betterpickers.numberpicker.NumberPickerDialogFragment;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import org.joda.time.DateTime;
 
@@ -98,6 +104,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
 
+
     DBTools dbTools = null;
 
     private String custom_product = "";
@@ -111,6 +118,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
             mHasDialogFrame = findViewById(R.id.frame) != null;
         }
 
+
         // Restore preferences
         if (this != null) {
             settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -121,6 +129,10 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setBackgroundColor(getResources().getColor(R.color.primary));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
         findViewsById();
 
@@ -190,7 +202,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 if (!recordMap.isEmpty()) {
 
                     if (units.equals("fl oz")) {
-                        et_volume.setText(recordMap.get(CommonConstants.C_VOLUME_DRINK));
+                        et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK))),1));
                         //rb_floz.setChecked(true);
                     } else {
                         et_volume.setText("" + Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK)) / 0.033814), 1));
@@ -202,7 +214,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                         if (rb_floz.isChecked()) {
                             toDB_volume = et_volume.getText().toString();
                         } else if (rb_ml.isChecked()) {
-                            toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                            toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                         }
                         tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
 
@@ -218,6 +230,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         });
 
     }
+
 
     private void loadSpinnerData() {
         // database handler
@@ -296,7 +309,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 if (rb_floz.isChecked()) {
                     toDB_volume = et_volume.getText().toString();
                 } else {
-                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                 }
                 tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
             }
@@ -309,7 +322,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                     if (rb_floz.isChecked()) {
                         toDB_volume = et_volume.getText().toString();
                     } else if (rb_ml.isChecked()) {
-                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                     }
                     tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
                 }
@@ -327,7 +340,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
         if (!recordMap.isEmpty()) {
 
             if (units.equals("fl oz")) {
-                et_volume.setText(recordMap.get(CommonConstants.C_VOLUME_DRINK));
+                et_volume.setText(""+Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK))),1));
                 //rb_floz.setChecked(true);
             } else {
                 et_volume.setText("" + Calculations.round((Double.parseDouble(recordMap.get(CommonConstants.C_VOLUME_DRINK)) / 0.033814), 1));
@@ -339,7 +352,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                 if (rb_floz.isChecked()) {
                     toDB_volume = et_volume.getText().toString();
                 } else if (rb_ml.isChecked()) {
-                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                    toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                 }
                 tv_caffeine_num.setText(Util.adjustCaffeineMass(recordMap.get(CommonConstants.C_DENSITY_CAFFEINE), toDB_volume) + "mg");
             }
@@ -431,6 +444,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
             if (et_date.getText().toString() != ""
                     && !et_start.getText().toString().equals("")
                     && (!myAutoComplete.getText().toString().equals("") || (!custom_product.equals("") && cb_custom.isChecked()))
+                    && !et_duration.getText().toString().equals("")
                     && !et_volume.getText().toString().equals("")
                     ) {
                 final DBTools dbTools = DBTools.getInstance(this);
@@ -448,7 +462,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                     if (rb_floz.isChecked()) {
                         toDB_volume = et_volume.getText().toString();
                     } else if (rb_ml.isChecked()) {
-                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                     }
                     // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                     HashMap<String, String> queryValuesMap = new HashMap<String, String>();
@@ -469,7 +483,7 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
                     if (rb_floz.isChecked()) {
                         toDB_volume = et_volume.getText().toString();
                     } else if (rb_ml.isChecked()) {
-                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 1);
+                        toDB_volume = "" + Calculations.round((Double.parseDouble(et_volume.getText().toString()) * 0.033814), 4);
                     }
                     // KEY_ID | PRODUCT | DRINK_VOLUME | CAFFEINE_MASS | DATE_CREATED | TIME_STARTED
                     HashMap<String, String> queryValuesMap = new HashMap<String, String>();
@@ -529,15 +543,30 @@ public class AddNewCaffeineFragment extends ActionBarActivity implements DatePic
 
     @Override
     public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-        calendar.set(year, monthOfYear, dayOfMonth);
-        update();
+        DateTime now = DateTime.now();
+
+        if (year<=now.getYear() && monthOfYear<now.getMonthOfYear() && dayOfMonth<=now.getDayOfMonth()) {
+            alert("monthOfYear: "+monthOfYear+" | now.getMOY: "+now.getMonthOfYear());
+            alert("year: "+year+" | now.getY: "+now.getYear());
+            alert("dayOfMonth: "+dayOfMonth+" | now.getDOM: "+now.getDayOfMonth());
+            calendar.set(year, monthOfYear, dayOfMonth);
+            update();
+        }else{
+            Toast.makeText(this, "The date specified is in the future", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void onTimeSet(RadialTimePickerDialog radialTimePickerDialog, int hour_of_day, int minute) {
-        calendar.set(Calendar.HOUR_OF_DAY, hour_of_day);
-        calendar.set(Calendar.MINUTE, minute);
-        update();
+        DateTime now = DateTime.now();
+
+        if (hour_of_day<= now.getHourOfDay() && minute <= now.getMinuteOfHour()){
+            calendar.set(Calendar.HOUR_OF_DAY, hour_of_day);
+            calendar.set(Calendar.MINUTE, minute);
+            update();
+        }else{
+            Toast.makeText(this, "The time specified is in the future", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
